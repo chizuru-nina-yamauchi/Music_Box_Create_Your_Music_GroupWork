@@ -2,20 +2,19 @@ package org.example.music_box_create_your_music_groupwork.repository;
 
 import org.example.music_box_create_your_music_groupwork.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 /**
  * Repository interface for managing Role entities.
- * Provides methods for performing CRUD operations on Role entities.
+ * Extends JpaRepository to provide CRUD operations and additional query methods.
  */
-@Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     /**
-     * Finds a role by its name.
+     * Finds a Role by its name.
      *
      * @param name the name of the role to find
-     * @return the role with the specified name, or null if no role is found
+     * @return an Optional containing the found Role, or an empty Optional if no Role is found
      */
-    Role findByName(String name);
+    Optional<Role> findByName(String name);
 }

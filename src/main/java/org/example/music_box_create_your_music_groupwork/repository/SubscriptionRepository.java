@@ -9,24 +9,15 @@ import java.util.List;
 
 /**
  * Repository interface for managing Subscription entities.
- * Provides methods for performing CRUD operations on Subscription entities.
+ * Extends JpaRepository to provide CRUD operations and additional query methods.
  */
-@Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 
     /**
-     * Finds subscriptions by the user ID.
+     * Finds a list of Subscriptions by the user ID.
      *
-     * @param userId the ID of the user
-     * @return a list of subscriptions for the specified user
+     * @param userId the ID of the user whose subscriptions are to be found
+     * @return a list of Subscriptions associated with the given user ID
      */
     List<Subscription> findByUserId(Long userId);
-
-    /**
-     * Finds subscriptions that end after the specified date.
-     *
-     * @param date the date to compare with the end date of subscriptions
-     * @return a list of subscriptions that end after the specified date
-     */
-    List<Subscription> findByEndDateAfter(LocalDateTime date);
 }
