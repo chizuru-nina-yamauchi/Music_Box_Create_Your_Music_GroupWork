@@ -2,7 +2,7 @@
 
 ## Overview
 
-MusicBox is a Spring Boot-based application designed to manage users and roles with a PostgreSQL database. The application utilizes Spring Security for authentication and authorization. Below is a summary of the project's key components.
+MusicBox is a Spring Boot-based application designed to manage users, roles, and premium subscriptions using a PostgreSQL database. The application utilizes Spring Security for authentication and authorization. Below is a summary of the project's key components.
 
 ## Project Structure
 
@@ -13,6 +13,7 @@ MusicBox is a Spring Boot-based application designed to manage users and roles w
     - Optional fields: `accountNonExpired`, `accountNonLocked`, `credentialsNonExpired` (for more granular account status management)
     - Relationships:
         - Many-to-Many relationship with `Role` entity.
+        - One-to-Many relationship with `Subscription` entity.
 
 - **Role**
     - Represents a role in the system.
@@ -20,24 +21,53 @@ MusicBox is a Spring Boot-based application designed to manage users and roles w
     - Relationships:
         - Many-to-Many relationship with `User` entity.
 
+- **Subscription**
+    - Represents a premium subscription in the system.
+    - Fields: `id`, `startDate`, `endDate`, `user`
+    - Relationships:
+        - Many-to-One relationship with `User` entity.
+
 ### 2. **Repositories**
 - **UserRepository**
     - Interface for managing `User` entities.
     - Custom queries for finding users by `username`, `email`, `usernameOrEmail`, and `id`.
     - Methods for saving, finding, and deleting users.
 
-### 3. **Security Configuration**
-- **CustomUserDetailsService**
-    - Implements `UserDetailsService`.
-    - Loads user-specific data (username, password, roles) from the database for authentication.
+- **RoleRepository**
+    - Interface for managing `Role` entities.
+    - Custom queries for finding roles by name.
 
-- **SecurityConfig**
-    - Extends `WebSecurityConfigurerAdapter`.
-    - Configures:
-        - Password encoding using `BCryptPasswordEncoder`.
-        - Custom authentication provider using `DaoAuthenticationProvider`.
-        - HTTP security settings to define which endpoints require authentication.
-        - Form-based login with a custom login page.
+- **SubscriptionRepository**
+    - Interface for managing `Subscription` entities.
+    - Custom queries for finding subscriptions by `userId`.
+
+### 3. **Services**
+- **UserService**
+    - Contains business logic for user management, including registration, login, and profile updates.
+
+- **RoleService**
+    - Manages roles, including assigning and retrieving roles.
+
+- **SubscriptionService**
+    - Handles the creation, management, and validation of premium subscriptions.
+
+## Subscriber (Premium User) Features
+
+Premium users on our platform have access to the following enhanced features:
+
+1. **Access to Advanced Learning Modules**: Unlock more in-depth music production lessons, tutorials, and interactive exercises that go beyond the basics.
+
+2. **Expanded Sound Libraries**: Gain access to a wider range of instruments, sounds, and samples to use in your music projects.
+
+3. **Project Export Options**: Export your music projects in higher-quality formats or directly to music platforms like Spotify.
+
+4. **Collaborative Features**: Collaborate with others in real-time, sharing projects and working together on compositions.
+
+5. **Additional Storage**: Benefit from more storage space for saving projects and sound samples.
+
+6. **Personalized Feedback and Mentorship**: Receive personalized feedback from mentors or experts within the platform.
+
+7. **Early Access to New Features**: Get early access to new tools or features before they are available to regular users.
 
 ## Dependencies
 
@@ -58,4 +88,3 @@ spring.datasource.username=your_username
 spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
-#   M u s i c B o x 
