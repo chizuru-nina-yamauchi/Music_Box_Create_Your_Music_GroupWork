@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Box</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center mt-5">Music Box</h1>
+    <div class="row mt-5">
+        <div class="col">
+            <h2 class="text-center">Drums</h2>
+            <div class="row">
+                <div class="cell col-12 text-center" th:each="drumEntry : ${drums}" th:data-audio="@{${drumEntry.value.audioFile}}" th:data-type="drums" onclick="resumeToneContext(); selectSound(this, 'drums')">
+                    <button class="btn btn-primary"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h2 class="text-center">Bass</h2>
+            <div class="row">
+                <div class="cell col-12 text-center" th:each="bassEntry : ${bass}" th:data-audio="@{${bassEntry.value.audioFile}}" th:data-type="bass" onclick="resumeToneContext(); selectSound(this, 'bass')">
+                    <button class="btn btn-primary"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h2 class="text-center">Chords</h2>
+            <div class="row">
+                <div class="cell col-12 text-center" th:each="chordEntry : ${chords}" th:data-audio="@{${chordEntry.value.audioFile}}" th:data-type="chords" onclick="resumeToneContext(); selectSound(this, 'chords')">
+                    <button class="btn btn-primary"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h2 class="text-center">Melodies</h2>
+            <div class="row">
+                <div class="cell col-12 text-center" th:each="melodyEntry : ${melodies}" th:data-audio="@{${melodyEntry.value.audioFile}}" th:data-type="melodies" onclick="resumeToneContext(); selectSound(this, 'melodies')">
+                    <button class="btn btn-primary"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="drums-selection" value="">
+    <input type="hidden" id="bass-selection" value="">
+    <input type="hidden" id="chords-selection" value="">
+    <input type="hidden" id="melodies-selection" value="">
+    <button class="btn btn-success mt-3" onclick="resumeToneContext(); playAll()">Play All</button>
+    <button id="start-button" class="btn btn-primary mt-3">Start</button>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/tone@15.0.4/build/Tone.js"></script>
+<script type="module">
+    // Function to resume Tone context
+    async function resumeToneContext() {
+        if (window.Tone && window.Tone.context && window.Tone.context.state !== 'running') {
+            await window.Tone.context.resume();
+            console.log('Audio context resumed');
+        }
+
+        // Check if Tone.js is connected and ready to play sounds
+        if (window.Tone && window.Tone.context.state === 'running') {
+            console.log('Tone.js is connected and ready to play sounds');
+        } else {
+            console.log('Tone.js is not connected or not ready to play sounds');
+        }
+
+    }
+
+    // Function to load and play audio using Tone.js
+    async function loadAndPlay(audioFile) {
+        const player = new Tone.Player().toDestination();
+        try {
+            await player.load(audioFile); // Use the load function to load the audio file
+            player.start();
+        } catch (error) {
+            console.error('Error loading audio file:', error);
+        }
+    }
+
+    let players = {
+        drums: null,
+        bass: null,
+        chords: null,
+        melodies: null
+    };
+
+    // Function to select sound
+    async function selectSound(element, type) {
+        const audioFile = element.getAttribute('data-audio');
+        document.getElementById(`${type}-selection`).value = audioFile;
+
+        // Stop the currently playing sound of the same type, if any
+        if (players[type]) {
+            players[type].stop();
+        }
+
+        // Load and play the new sound
+        players[type] = new Tone.Player().toDestination();
+        try {
+            await players[type].load(audioFile);
+            players[type].start();
+        } catch (error) {
+            console.error('Error loading audio file:', error);
+        }
+    }
+
+    // Function to play all selected sounds
+    async function playAll() {
+        const drums = document.getElementById('drums-selection').value;
+        const bass = document.getElementById('bass-selection').value;
+        const chords = document.getElementById('chords-selection').value;
+        const melodies = document.getElementById('melodies-selection').value;
+
+        if (drums) loadAndPlay(drums);
+        if (bass) loadAndPlay(bass);
+        if (chords) loadAndPlay(chords);
+        if (melodies) loadAndPlay(melodies);
+    }
+
+    // Attach event listeners
+    document.querySelectorAll('.cell').forEach(cell => {
+        cell.addEventListener('click', function() {
+            resumeToneContext();
+            selectSound(this, this.getAttribute('data-type'));
+        });
+    });
+
+    document.getElementById('start-button').addEventListener('click', resumeToneContext);
+    document.querySelector('.btn-success').addEventListener('click', function() {
+        resumeToneContext();
+        playAll();
+    });
+</script>
+
+</body>
+</html>
