@@ -1,6 +1,10 @@
 package org.example.music_box_create_your_music_groupwork.repository;
 
-
-// Not used for Main Music App part of the project, but to show the package, adding the java file
+/**
+ * AudioFileRepository interface for managing audio files.
+ *
+ * This interface is not used for the main music application part of the project,
+ * but is included to demonstrate the package structure.
+ */
 public interface AudioFileRepository {
 }

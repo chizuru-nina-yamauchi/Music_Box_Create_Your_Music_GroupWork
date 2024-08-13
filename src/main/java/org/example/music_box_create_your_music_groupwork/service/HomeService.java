@@ -11,6 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * HomeService class provides services related to the home page of the application.
+ */
 @Service
 public class HomeService {
 
@@ -19,6 +22,13 @@ public class HomeService {
     @Autowired
     private ResourceLoader resourceLoader;
 
+    /**
+     * Creates a map of instruments with specified name prefix and count.
+     *
+     * @param namePrefix the prefix for the instrument names
+     * @param count the number of instruments to create
+     * @return a map of instrument names to Instrument objects
+     */
     public Map<String, Instrument> createInstrumentMap(String namePrefix, int count) {
         Map<String, Instrument> instruments = new LinkedHashMap<>();
         for (int i = 1; i <= count; i++) {
@@ -27,7 +37,7 @@ public class HomeService {
             instrument.setName(name);
             String audioPath = "/audio/" + name + ".mp3";
             Resource resource = resourceLoader.getResource("classpath:/static" + audioPath);
-            try{
+            try {
                 if (resource.exists()) {
                     instrument.setAudioFile(audioPath);
                     instruments.put(name, instrument);
