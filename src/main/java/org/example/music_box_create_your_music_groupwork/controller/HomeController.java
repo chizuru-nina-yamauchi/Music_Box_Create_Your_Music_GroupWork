@@ -9,12 +9,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Map;
 
+/**
+ * Controller class for handling operations related to Home.
+ */
 @Controller
 public class HomeController {
 
+
+    /**
+     * HomeService to handle business logic related to Home.
+     */
     @Autowired
     private HomeService homeService;
 
+    /**
+     * Mapping for "/home" URL.
+     * Creates maps of instruments and adds them to the model.
+     *
+     * @param model The Model object to add attributes to for rendering in the view.
+     * @return The name of the view to render.
+     */
     @GetMapping("/home")
     public String home(Model model) {
         // Create maps of instruments
