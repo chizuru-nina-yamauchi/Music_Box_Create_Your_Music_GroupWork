@@ -71,6 +71,40 @@ Premium users on our platform have access to the following enhanced features:
 
 ## Dependencies
 
+MusicBoxCreateYourMusicGroupWorkApplication
+|
+|-- config
+|   |-- WebConfig
+|
+|-- controller
+|   |-- HomeController
+|
+|-- service
+|   |-- HomeService
+|   |-- RoleService
+|   |-- SubscriptionService
+|   |-- UserService
+|
+|-- repository
+|   |-- AudioFileRepository
+|   |-- RoleRepository
+|   |-- SubscriptionRepository
+|   |-- UserRepository
+|
+|-- model
+|   |-- Instrument
+|   |-- Role
+|   |-- Subscription
+|   |-- User
+|
+|-- resources
+|   |-- static
+|   |-- templates
+|       |-- home.html
+|
+|-- application.properties
+
+
 Ensure the following dependencies are included in your `pom.xml` (for Maven) or `build.gradle` (for Gradle):
 
 - **Spring Boot Starter Security**: Provides security features like authentication and authorization.
