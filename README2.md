@@ -69,8 +69,8 @@ Premium users on our platform have access to the following enhanced features:
 
 7. **Early Access to New Features**: Get early access to new tools or features before they are available to regular users.
 
-## Dependencies
-
+## Project Setup
+```xml
 MusicBoxCreateYourMusicGroupWorkApplication
 |
 |-- config
@@ -103,8 +103,8 @@ MusicBoxCreateYourMusicGroupWorkApplication
 |       |-- home.html
 |
 |-- application.properties
-
-
+```
+## Dependencies
 Ensure the following dependencies are included in your `pom.xml` (for Maven) or `build.gradle` (for Gradle):
 
 - **Spring Boot Starter Security**: Provides security features like authentication and authorization.
@@ -122,3 +122,5 @@ spring.datasource.username=your_username
 spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+```
+
