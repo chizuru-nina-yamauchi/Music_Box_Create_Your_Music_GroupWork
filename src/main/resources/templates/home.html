@@ -11,6 +11,136 @@
     <!-- Link to Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
+    <!-- Define resumeToneContext selectSound function in the head -->
+    <script>
+        // Define players in the global scope
+        let players = {
+            drums: null,
+            bass: null,
+            chords: null,
+            melodies: null
+        };
+
+        // Define a flag to check if the AudioContext has been resumed
+        let audioContextResumed = false;
+
+        window.resumeToneContext = async function() {
+            if(!audioContextResumed){ // Check if the AudioContext has NOT been resumed yet
+                if (window.Tone && window.Tone.context && window.Tone.context.state !== 'running') {
+                await window.Tone.context.resume();
+                console.log('Audio context resumed');
+                audioContextResumed = true; // Set the flag to true
+                }
+            }
+        }
+
+        function playSound() {
+            if (!audioContextResumed) {
+                console.log('AudioContext has not been resumed yet');
+                return;
+            }
+        }
+
+            // Function to select sound
+            async function selectSound(element, type) {
+                if (!audioContextResumed) {
+                    console.log('AudioContext has not been resumed yet');
+                    return;
+                }
+                const audioFile = element.getAttribute('data-audio');
+                console.log('Audio file:', audioFile); // Print the value of audioFile
+
+                document.getElementById(`${type}-selection`).value = audioFile;
+
+                // Stop the currently playing sound of the same type, if any
+                if (players[type]) {
+                    players[type].stop();
+                }
+
+
+                // Create the Tone.Player instance here, after the audio context has been resumed
+                players[type] = new Tone.Player(audioFile).toDestination();
+
+                try {
+                    await players[type].load(); // Use the load function to load the audio file
+                } catch (error) {
+                    console.error('Error loading audio file:', error);
+                }
+
+                // Schedule the sound to start at the next measure
+                Tone.Transport.schedule(time => {
+                    players[type].start(time);
+                }, '@1m'); // '@1m' means the next measure
+            }
+
+            // Function to load and play audio using Tone.js
+            async function loadAndPlay(audioFile) {
+                const player = new Tone.Player().toDestination();
+                try {
+                    await player.load(audioFile); // Use the load function to load the audio file
+                } catch (error) {
+                    console.error('Error loading audio file:', error);
+                }
+                return player;
+            }
+
+            // Function to start recording
+            function startRecording() {
+                // Start the recorder
+                recorder.start();
+                console.log('Recording started');
+            }
+
+            // Function to stop recording and export the audio
+            function stopRecordingAndExport() {
+                // Stop the recorder and export the audio
+                recorder.stop();
+                recorder.export().then(function (blob) {
+                    // Create a link element
+                    let url = URL.createObjectURL(blob);
+                    let a = document.createElement("a");
+
+                    // Set the link attributes
+                    a.href = url;
+                    a.download = 'output.wav';
+
+                    // Append the link to the body and click it to start the download
+                    document.body.appendChild(a);
+                    a.click();
+
+                    console.log('Recording exported');
+                });
+            }
+
+
+            // Function to play all selected sounds
+            async function playAll() {
+                const drums = document.getElementById('drums-selection').value;
+                const bass = document.getElementById('bass-selection').value;
+                const chords = document.getElementById('chords-selection').value;
+                const melodies = document.getElementById('melodies-selection').value;
+
+                if (drums) selectSound({getAttribute: () => drums}, 'drums');
+                if (bass) selectSound({getAttribute: () => bass}, 'bass');
+                if (chords) selectSound({getAttribute: () => chords}, 'chords');
+                if (melodies) selectSound({getAttribute: () => melodies}, 'melodies');
+
+                // Start the transport to begin the scheduled events
+                Tone.Transport.start();
+            }
+
+            // Function to stop all sounds
+            function stopAll() {
+                for (let type in players) {
+                    if (players[type]) {
+                        players[type].stop();
+                    }
+                }
+            }
+
+
+
+    </script>
 </head>
 <body>
 <!-- Main container for the webpage -->
@@ -62,82 +192,24 @@
     <input type="hidden" id="bass-selection" value="">
     <input type="hidden" id="chords-selection" value="">
     <input type="hidden" id="melodies-selection" value="">
-    <!-- Button to play all selected sounds -->
-    <button class="btn btn-success mt-3" onclick="resumeToneContext(); playAll()">Play All</button>
     <!-- Button to start the Tone.js audio context -->
     <button id="start-button" class="btn btn-primary mt-3">Start</button>
+    <!-- Button to play all selected sounds -->
+    <button class="btn btn-success mt-3" onclick="resumeToneContext(); playAll()">Play All</button>
+    <!-- Button to stop all sounds -->
+    <button class="btn btn-danger mt-3" onclick="stopAll()">Stop All</button>
+    <!-- Button to start recording -->
+    <button id="record-button" class="btn btn-warning mt-3" onclick="startRecording()">Start Recording</button>
+    <!-- Button to stop recording and export the audio -->
+    <button id="export-button" class="btn btn-info mt-3" onclick="stopRecordingAndExport()">Export Recording</button>
 </div>
 
 <!-- Link to Tone.js library -->
 <script src="https://cdn.jsdelivr.net/npm/tone@15.0.4/build/Tone.js"></script>
-
+<!-- Custom JavaScript code for the webpage -->
 <script type="module">
-    // Function to resume Tone context
-    async function resumeToneContext() {
-        if (window.Tone && window.Tone.context && window.Tone.context.state !== 'running') {
-            await window.Tone.context.resume();
-            console.log('Audio context resumed');
-        }
-
-        // Check if Tone.js is connected and ready to play sounds
-        if (window.Tone && window.Tone.context.state === 'running') {
-            console.log('Tone.js is connected and ready to play sounds');
-        } else {
-            console.log('Tone.js is not connected or not ready to play sounds');
-        }
-
-    }
-
-    // Function to load and play audio using Tone.js
-    async function loadAndPlay(audioFile) {
-        const player = new Tone.Player().toDestination();
-        try {
-            await player.load(audioFile); // Use the load function to load the audio file
-            player.start();
-        } catch (error) {
-            console.error('Error loading audio file:', error);
-        }
-    }
-
-    let players = {
-        drums: null,
-        bass: null,
-        chords: null,
-        melodies: null
-    };
-
-    // Function to select sound
-    async function selectSound(element, type) {
-        const audioFile = element.getAttribute('data-audio');
-        document.getElementById(`${type}-selection`).value = audioFile;
-
-        // Stop the currently playing sound of the same type, if any
-        if (players[type]) {
-            players[type].stop();
-        }
-
-        // Load and play the new sound
-        players[type] = new Tone.Player().toDestination();
-        try {
-            await players[type].load(audioFile);
-            players[type].start();
-        } catch (error) {
-            console.error('Error loading audio file:', error);
-        }
-    }
-
-    // Function to play all selected sounds
-    async function playAll() {
-        const drums = document.getElementById('drums-selection').value;
-        const bass = document.getElementById('bass-selection').value;
-        const chords = document.getElementById('chords-selection').value;
-        const melodies = document.getElementById('melodies-selection').value;
-
-        if (drums) loadAndPlay(drums);
-        if (bass) loadAndPlay(bass);
-        if (chords) loadAndPlay(chords);
-        if (melodies) loadAndPlay(melodies);
-    }
+    // Initialize the recorder
+    recorder = new Tone.Recorder().toDestination();
 
     // Attach event listeners
     document.querySelectorAll('.cell').forEach(cell => {
@@ -147,11 +219,17 @@
         });
     });
 
-    document.getElementById('start-button').addEventListener('click', resumeToneContext);
+    document.getElementById('start-button').addEventListener('click', function () {
+        resumeToneContext();
+        playSound();
+    });
     document.querySelector('.btn-success').addEventListener('click', function() {
         resumeToneContext();
         playAll();
     });
+
+    // Add event listener for 'Stop All' button
+    document.querySelector('.btn-danger').addEventListener('click', stopAll);
 </script>
 
 </body>
