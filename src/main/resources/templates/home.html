@@ -67,7 +67,7 @@
     <!-- Button to play all selected sounds -->
     <button class="btn btn-success mt-3" onclick="resumeToneContext(); playAll()">Play All</button>
     <!-- Button to stop all selected sounds -->
-    <button class="btn btn.danger mt-3" onclick="stopAll()">Stop All</button>
+    <button class="btn btn-danger mt-3" onclick="stopAll()">Stop All</button>
 </div>
 
 <!-- Link to Tone.js library -->
@@ -154,11 +154,10 @@
         }
     }
     // Function to stop all selected sounds
-    function stopAll(){
-        for(let type in players){
-            if(players[type]){
+    function stopAll() {
+        for(let type in players) {
+            if(players[type]) {
                 players[type].stop();
-                players[type] = null; // Set the player to null after stopping it
             }
         }
     }
@@ -176,6 +175,8 @@
         resumeToneContext();
         playAll();
     });
+
+    document.querySelector('.btn-danger').addEventListener('click', stopAll);
 </script>
 
 </body>
