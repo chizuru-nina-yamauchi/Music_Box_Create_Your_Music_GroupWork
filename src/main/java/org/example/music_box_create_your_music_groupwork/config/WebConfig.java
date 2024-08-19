@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/audio/**")
+        registry.addResourceHandler("/static/audio/audio/**")
                 .addResourceLocations("classpath:/static/audio/");
     }
 

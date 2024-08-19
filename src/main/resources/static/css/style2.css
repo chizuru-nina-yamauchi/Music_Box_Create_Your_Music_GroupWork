@@ -1,0 +1,16 @@
+:root {
+    --cell-color: #ccc;
+    --cell-hover-color: #f0f0f0;
+}
+
+.cell {
+    border: 1px solid var(--cell-color);
+    cursor: pointer;
+    margin: 5px;
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.cell:hover {
+    background-color: var(--cell-hover-color);
+}
