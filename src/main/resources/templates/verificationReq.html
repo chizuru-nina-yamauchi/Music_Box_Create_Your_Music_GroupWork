@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification Required</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:if="${message}">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h2 class="text-center mt-5">Pending Verification</h2>
+                    <div class="alert alert-success" role="alert">
+                    A verification email has been sent to you. Please check your inbox to continue. Don't forget to check the spam folder!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
