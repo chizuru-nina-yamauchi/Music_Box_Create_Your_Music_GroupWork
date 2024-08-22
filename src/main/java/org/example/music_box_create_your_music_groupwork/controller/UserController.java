@@ -19,8 +19,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private RoleRepo roleRepo;
+    //@Autowired
+    //private RoleRepo roleRepo;
 
 
     // home page
@@ -62,10 +62,11 @@ public class UserController {
     public String signup(User user, Model model){
         boolean isUserSaved = userService.saveUser(user);
         if (!isUserSaved){
-            model.addAttribute("errorMessage", "Failed to send verification E-Mail. Please add a correct E-Mail.");
+            model.addAttribute("errorMessage", "Failed to send verification email. Please add a correct email.");
             return "redirect:/signup";
         }
-        return "redirect:/login";
+        model.addAttribute("message","A verification email has been send to " + user.getEmail());
+        return "verificationReq";
     }
 
 

@@ -165,7 +165,12 @@ public class UserService implements UserDetailsService {
         email.setTo(recipientAddress);
         email.setSubject(subject);
         email.setText(message);
-        mailSender.send(email);
+        try {
+            mailSender.send(email);
+        } catch (Exception e){
+            System.out.println("Failed to send E-Mail." + e.getMessage());
+        }
+
     }
 
 
