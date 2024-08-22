@@ -34,6 +34,11 @@
                     <a th:href="@{/signup}">Don't have an account? Sign up.</a>
                 </div>
             </form>
+
+            <div class="text-center mt-3">
+                <a th:href="@{/forgotPassword}">Forgot your Password? Reset here.</a>
+            </div>
+
             <div th:if="${param.verified}">
                 <div class="alert alert-success" role="alert">
                     Your E-Mail has been verified successfully. You can now log in.
