@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h2 class="text-center mt-5">Login (づ￣ ³￣)づ </h2>
+            <h2 class="text-center mt-5">Login</h2>
             <form th:action="@{/login}" method="post">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
@@ -21,22 +21,22 @@
                 </div>
                 <div th:if="${param.error}">
                     <div class="alert alert-danger" role="alert">
-                        Invalid Credentials or E-Mail is not verified (╥︣﹏᷅╥)
+                        Invalid Credentials or E-Mail is not verified.
                     </div>
                 </div>
                 <div th:if="${param.logout}">
                     <div class="alert alert-success" role="alert">
-                        You have been logged out successfully. YEY (っ＾▿＾)っ
+                        You have been logged out successfully.
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Login</button>
                 <div class="text-center mt-3">
-                    <a th:href="@{/signup}">Don't have an account? Sign up (ㆆ_ㆆ) </a>
+                    <a th:href="@{/signup}">Don't have an account? Sign up.</a>
                 </div>
             </form>
             <div th:if="${param.verified}">
                 <div class="alert alert-success" role="alert">
-                    Your E-Mail has been verified successfully. ᕙ(^▿^-ᕙ) You can now log in. (>‿◠)
+                    Your E-Mail has been verified successfully. You can now log in.
                 </div>
             </div>
         </div>
