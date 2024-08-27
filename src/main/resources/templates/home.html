@@ -82,6 +82,27 @@
     <button class="btn btn-success mt-3" onclick="resumeToneContext(); playAll()">Play All</button>
     <!-- Button to stop all selected sounds -->
     <button class="btn btn-danger mt-3" onclick="stopAll()">Stop All</button>
+
+    <!-- Buttons to start and stop recording -->
+    <button id="start-record-button" class="btn btn-secondary mt-3">Start Recording</button>
+    <button id="stop-recorded-button" class="btn btn-secondary mt-3">Stop Recording</button>
+    <!-- Button to play the recorded audio -->
+    <button id="play-recorded-button" class="btn btn-secondary mt-3">Listen to the Recording</button>
+
+    <!-- Table to display the recorded audios -->
+    <table id="recordings-table" class="table mt-3">
+        <thead>
+        <tr>
+            <th>Recording</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+         <!-- Row for each recorded audio(Placeholder -->
+         <!-- JavaScript code will dynamically create and insert new rows to this table body as the new recordings are made -->
+        </tbody>
+    </table>
+
 </div>
 
 <!-- Link to Tone.js library -->
@@ -125,6 +146,8 @@
     // Function to select sound
     async function selectSound(element, type) {
         const audioFile = element.getAttribute('data-audio');
+        console.log('Selected sound:', audioFile);
+        console.log('Sound type:', type);
         document.getElementById(`${type}-selection`).value = audioFile;
 
         // Stop the currently playing sound of the same type, if any
@@ -148,6 +171,11 @@
         const bass = document.getElementById('bass-selection').value;
         const chords = document.getElementById('chords-selection').value;
         const melodies = document.getElementById('melodies-selection').value;
+
+        console.log('Selected drums sound:', drums);
+        console.log('Selected bass sound:', bass);
+        console.log('Selected chords sound:', chords);
+        console.log('Selected melodies sound:', melodies);
 
         // Load all audio files
         const loadPromises = [];
@@ -176,21 +204,149 @@
         }
     }
 
-    // Attach event listeners
-    document.querySelectorAll('.cell').forEach(cell => {
-        cell.addEventListener('click', function() {
-            resumeToneContext();
-            selectSound(this, this.getAttribute('data-type'));
+    let mediaRecorder; // MediaRecorder object to record audio
+    let recordedChunks = []; // Array to store the recorded audio chunks
+    let recordedAudios = []; // Array to store the recorded audio URLs
+
+    // Function to start recording
+    function startRecording(){
+        console.log('startRecording called')
+        // Clear the recorded chunks
+        recordedChunks = [];
+        console.log('recordedChunks cleared');
+
+        // Create a new MediaStreamAudioDestinationNode which can be used to record audio
+        const dest = window.Tone.context.createMediaStreamDestination();
+        console.log('MediaStreamAudioDestinationNode created:', dest);
+        // Connect all players to the destination
+        for(let type in players) {
+            if (players[type]) {
+                players[type].connect(dest); // Connect each player to the destination
+                console.log('Player connected to destination:', type);
+            }
+        }
+
+        // Create a new MediaRecorder to record the audio
+        mediaRecorder = new MediaRecorder(dest.stream);
+        mediaRecorder.ondataavailable = function(e) {
+            recordedChunks.push(e.data); // Store the recorded chunks
+        };
+        mediaRecorder.start(); // Start recording
+
+        console.log('Recording started');
+    }
+
+    /*
+    * A Blob (Binary Large OBject) is an object in JavaScript that represents immutable raw data.
+    * Blobs represent data that isn't necessarily in a JavaScript-native format.
+    * They are used to store and work with data that isn't text, like audio, images, and other multimedia data types.
+    * */
+    // Function to stop recording
+    function stopRecording(){
+        console.log('stopRecording called');
+        if(mediaRecorder && mediaRecorder.state == 'recording'){
+            mediaRecorder.stop();
+            console.log('MediaRecorder stopped');
+            // Convert recorded chunks to a Blob
+            const recordedBlob = new Blob(recordedChunks, { 'type' : 'audio/ogg; codecs=opus' });
+            console.log('Recorded Blob created:', recordedBlob);
+
+            // Create an audio URL from the Blob
+            const recordedAudioUrl = URL.createObjectURL(recordedBlob);
+
+            console.log('Recorded audio URL:', recordedAudioUrl);
+
+            // Add the recorded audio to the array
+            recordedAudios.push(recordedAudioUrl);
+            console.log('Recorded audio added to the array:', recordedAudios);
+
+            // update the table with the new recorded audio
+            updateRecordingsTable();
+            console.log('Table updated with the new recording');
+
+            console.log('Recorded chunks:', recordedChunks);
+        }
+    }
+
+    // Function to update the table with the recorded audio
+    function updateRecordingsTable(){
+        console.log('updateRecordingsTable called');
+        const tableBody = document.querySelector('#recordings-table tbody');
+        tableBody.innerHTML = ''; // Clear the table body
+        console.log('Table body cleared');
+
+        // Add a new row for each recorded audio
+        recordedAudios.forEach((audio, index) =>{
+            console.log('Adding row for recording:', index);
+            const row = document.createElement('tr');
+
+            // Add the recording name to the row
+            const nameCell = document.createElement('td');
+            nameCell.textContent = 'Recording ' + (index + 1);
+            row.appendChild(nameCell);
+            console.log('Recording name added to the row');
+
+            // Add the play button to the row
+            const actionsCell = document.createElement('td');
+            const playButton = document.createElement('button');
+            playButton.textContent = 'Play';
+            playButton.addEventListener('click', function(){
+                playRecordedAudio(index); // Play specific recorded audio by index
+            });
+            actionsCell.appendChild(playButton);
+            row.appendChild(actionsCell);
+            console.log('Play button added to the row');
+
+            // Add the row to the table body
+            tableBody.appendChild(row);
+            console.log('Row added to the table body');
         });
-    });
+    }
 
-    document.getElementById('start-button').addEventListener('click', resumeToneContext);
-    document.querySelector('.btn-success').addEventListener('click', function() {
-        resumeToneContext();
-        playAll();
-    });
+    //Function to play the recorded audio
+    function playRecordedAudio(index){
+        console.log('playRecordedAudio called for index:', index);
+        if(recordedAudios[index]){
+            const audio = new Audio(recordedAudios[index]);  // Create a new Audio object with the recorded audio URL
+            audio.play(); // Play the audio
+            console.log('Playing recorded audio:', recordedAudios[index]);
+        } else{
+            console.log('No recorded audio found for index:', index);
+        }
+    }
 
-    document.querySelector('.btn-danger').addEventListener('click', stopAll);
+    window.onload = function() {
+        // Attach event listeners
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.addEventListener('click', function () {
+                resumeToneContext();
+                selectSound(this, this.getAttribute('data-type'));
+            });
+        });
+
+        document.getElementById('start-button').addEventListener('click', resumeToneContext);
+        document.querySelector('.btn-success').addEventListener('click', function () {
+            resumeToneContext();
+            playAll();
+        });
+
+        document.querySelector('.btn-danger').addEventListener('click', stopAll);
+
+        document.getElementById('start-record-button').addEventListener('click', function () {
+            resumeToneContext();
+            startRecording();
+        });
+        document.getElementById('stop-recorded-button').addEventListener('click', function () {
+            resumeToneContext();
+            stopRecording();
+
+        });
+        document.getElementById('play-recorded-button').addEventListener('click', function () {
+            resumeToneContext();
+            playRecordedAudio(recordedAudios.length - 1); // Play the last recorded audio
+        });
+    }
+
 </script>
 
 </body>
