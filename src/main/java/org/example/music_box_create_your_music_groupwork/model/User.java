@@ -23,6 +23,12 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+
+    // security question
+    //@Column(nullable = false)
+    //private String securityAnswer;
+
+
     @Column(nullable = false)
     private boolean verified = false;
 
@@ -42,23 +48,25 @@ public class User {
 
 
     // constructor
-    public User(Long id, String username, String password, String email, boolean verified, Set<Role> roles) {
+    public User(Long id, String username, String password, String email, boolean verified, Set<Role> roles/*,  String securityAnswer*/) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.verified = verified;
         this.roles = roles;
+       // this.securityAnswer = securityAnswer;
     }
 
 
     // constructor without id
-    public User(String username, String password, String email, boolean verified, Set<Role> roles) {
+    public User(String username, String password, String email, boolean verified, Set<Role> roles/*,  String securityAnswer*/) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.verified = verified;
         this.roles = roles;
+      //  this.securityAnswer = securityAnswer;
     }
 
 
@@ -126,5 +134,11 @@ public class User {
     }
 
 
+    /*public String getSecurityAnswer() {
+        return securityAnswer;
+    }
 
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }*/
 }
