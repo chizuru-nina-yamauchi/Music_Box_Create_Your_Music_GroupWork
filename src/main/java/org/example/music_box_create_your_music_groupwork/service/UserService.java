@@ -1,11 +1,9 @@
 package org.example.music_box_create_your_music_groupwork.service;
 
 import jakarta.transaction.Transactional;
-import org.example.music_box_create_your_music_groupwork.model.PasswordResetToken;
 import org.example.music_box_create_your_music_groupwork.model.Role;
 import org.example.music_box_create_your_music_groupwork.model.User;
 import org.example.music_box_create_your_music_groupwork.model.VerificationToken;
-import org.example.music_box_create_your_music_groupwork.repository.PasswordResetTokenRepo;
 import org.example.music_box_create_your_music_groupwork.repository.RoleRepo;
 import org.example.music_box_create_your_music_groupwork.repository.UserRepo;
 import org.example.music_box_create_your_music_groupwork.repository.VerificationTokenRepo;
@@ -44,9 +42,6 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private JavaMailSender mailSender;
-
-    @Autowired
-    private PasswordResetTokenRepo tokenRepo;
 
 
 
@@ -199,48 +194,4 @@ public class UserService implements UserDetailsService {
 
 
 
-    // send an email to reset password
-    public String sendEmail(User user) {
-        try {
-            String resetLink = generateResetToken(user);
-
-            SimpleMailMessage msg= new SimpleMailMessage();
-            msg.setFrom("springfull.coding.test@gmail.com");
-            msg.setTo(user.getEmail());
-
-            msg.setSubject("Request for a Password Reset");
-            msg.setText("Please click on the link to reset your Password :" + resetLink +
-                    "\n In case you have not requested a Password reset you can ignore this email.");
-
-            mailSender.send(msg);
-
-            return "success";
-        }catch (Exception e) {
-            System.out.println("Failed to send E-Mail." + e.getMessage());
-            return "error";
-        }
-    }
-
-    // generating a reset token
-    private String generateResetToken(User user) {
-        UUID uuid = UUID.randomUUID();
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime expiryDateTime = currentDateTime.plusMinutes(30);
-        PasswordResetToken resetToken = new PasswordResetToken();
-        resetToken.setUser(user);
-        resetToken.setToken(uuid.toString());
-        resetToken.setExpiryDateTime(expiryDateTime);
-        PasswordResetToken token = tokenRepo.save(resetToken);
-        if (token != null) {
-            String endpointUrl = "http://localhost:7070/resetPassword";
-            return endpointUrl +"/" + resetToken.getToken();
-        }
-        return "";
-    }
-
-    // check if resettoken is already expired
-    public boolean hasExpired(LocalDateTime expiryDateTime) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        return expiryDateTime.isAfter(currentDateTime);
-    }
 }

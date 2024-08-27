@@ -1,15 +1,13 @@
 package org.example.music_box_create_your_music_groupwork.controller;
 
-import org.example.music_box_create_your_music_groupwork.model.PasswordResetToken;
+
 import org.example.music_box_create_your_music_groupwork.model.User;
-import org.example.music_box_create_your_music_groupwork.repository.PasswordResetTokenRepo;
 import org.example.music_box_create_your_music_groupwork.repository.RoleRepo;
 import org.example.music_box_create_your_music_groupwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,8 +20,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordResetTokenRepo passwordResetTokenRepo;
 
     //@Autowired
     //private RoleRepo roleRepo;
@@ -87,48 +83,6 @@ public class UserController {
     }
 
 
-
-    // Reset Password
-    @GetMapping("/forgotPassword")
-    public String forgotPassword(){
-        return "forgotPassword";
-    }
-
-
-    @PostMapping("/forgotPassword")
-    public String forgotPasswordProcess(@ModelAttribute User user){
-        String output ="";
-        User user1 = userService.findByEmail(user.getEmail());
-        if (user!= null){
-            output = userService.sendEmail(user);
-        }
-        if (output.equals("success")) {
-            return "redirect:/register?success";
-        }
-        return "redirect:/login?error";
-    }
-
-
-    @GetMapping("/resetPassword{token}")
-    public String resetPasswordForm(String token, Model model){
-        PasswordResetToken reset = passwordResetTokenRepo.findByToken(token);
-        if (reset != null && userService.hasExpired(reset.getExpiryDateTime())) {
-            model.addAttribute("email", reset.getUser().getEmail());
-            return "resetPassword";
-        }
-        return "redirect:/forgotPassword?error";
-    }
-
-
-    @PostMapping("/resetPassword{token}")
-    public String passwordResetProcess(@ModelAttribute User user){
-        User user2 = userService.findByEmail(user.getEmail());
-        if(user2 != null){
-            user.setPassword(user.getPassword());
-            userService.saveUser(user2);
-        }
-        return "redirect:/login";
-    }
 
     // subscriber form
     // Ioannis Part
