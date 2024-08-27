@@ -2,7 +2,6 @@ package org.example.music_box_create_your_music_groupwork.controller;
 
 
 import org.example.music_box_create_your_music_groupwork.model.User;
-import org.example.music_box_create_your_music_groupwork.repository.RoleRepo;
 import org.example.music_box_create_your_music_groupwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,10 +18,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-
-    //@Autowired
-    //private RoleRepo roleRepo;
 
 
     // home page
@@ -79,8 +74,26 @@ public class UserController {
         if (isVerified){
             return "redirect:/login?verified";
         }
-        return "/signup";
+        return "signup";
     }
+
+
+
+
+    //forgot password
+    @GetMapping("/forgotPassword")
+    public String forgotPasswordForm(){
+        return "forgotPassword";
+    }
+
+
+  /*  @PostMapping("/forgotPassword")
+    public String handleForgotPassword(){
+        // logic
+        //send e mail
+        //userService.sendPasswordResetEmail(email) bsp
+    }*/
+
 
 
 
