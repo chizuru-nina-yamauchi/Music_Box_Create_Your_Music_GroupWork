@@ -35,10 +35,6 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private PasswordResetToken passwordResetToken;
-
-
 
     // empty constructor
     public User(){
@@ -130,11 +126,5 @@ public class User {
     }
 
 
-    public PasswordResetToken getPasswordResetToken() {
-        return passwordResetToken;
-    }
 
-    public void setPasswordResetToken(PasswordResetToken passwordResetToken) {
-        this.passwordResetToken = passwordResetToken;
-    }
 }
