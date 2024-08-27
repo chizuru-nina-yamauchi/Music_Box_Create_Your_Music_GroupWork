@@ -23,6 +23,10 @@
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
+<!--                <div class="mb-3">-->
+<!--                    <label for="securityQuestion" class="form-label">In what city were you born?</label>-->
+<!--                    <input type="text" class="form-control" id="securityQuestion" name="securityQuestion" required>-->
+<!--                </div>-->
                 <div th:if="${errorMessage}">
                     <div class="alert alert-danger" role="alert">
                         <span th:text="${errorMessage}"></span>
