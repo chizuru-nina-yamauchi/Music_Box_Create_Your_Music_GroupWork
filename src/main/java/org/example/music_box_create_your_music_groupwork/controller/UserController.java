@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 import java.security.Principal;
 import java.time.LocalDateTime;
 
@@ -27,8 +25,8 @@ public class UserController {
 
     @GetMapping("/subscribe")
     public String showSubscriberForm(Model model) {
-        model.addAttribute("subscription", new Subscription());  // Assuming you have a Subscription entity
-        return "subscriptionForm";  // Return the view containing the subscription form
+        model.addAttribute("subscription", new Subscription());
+        return "subscriptionForm";
     }
 
     @PostMapping("/subscribe")
@@ -36,17 +34,15 @@ public class UserController {
         User user = userService.findByUsername(principal.getName());
 
         if (user != null) {
-            // Assign the subscriber role to the user
             userService.addRoleToUser(user, "ROLE_SUBSCRIBER");
 
-            // Create a new subscription and save it
             subscription.setUser(user);
             subscription.setStartDate(LocalDateTime.now());
-            subscription.setEndDate(LocalDateTime.now().plusMonths(1));  // Example for a 1-month subscription
-            subscriptionService.createSubscription(subscription);
+            subscription.setEndDate(LocalDateTime.now().plusMonths(1));
+            subscriptionService.createSubscription(user.getId(), subscription.getStartDate(), subscription.getEndDate());
 
             model.addAttribute("message", "Subscription successful! You are now a premium user.");
-            return "redirect:/subscriber-home";  // Redirect to the subscriber home page
+            return "redirect:/subscriber-home";
         }
 
         model.addAttribute("errorMessage", "Subscription failed. Please try again.");
