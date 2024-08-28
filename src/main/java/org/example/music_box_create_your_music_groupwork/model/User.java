@@ -23,14 +23,13 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-
-    // security question
-    //@Column(nullable = false)
-    //private String securityAnswer;
-
-
     @Column(nullable = false)
     private boolean verified = false;
+
+
+    // security answer
+    @Column(nullable = false)
+    private String securityAnswer;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -48,25 +47,24 @@ public class User {
 
 
     // constructor
-    public User(Long id, String username, String password, String email, boolean verified, Set<Role> roles/*,  String securityAnswer*/) {
+    public User(Long id, String username, String password, String email, boolean verified, String securityAnswer, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.verified = verified;
+        this.securityAnswer = securityAnswer;
         this.roles = roles;
-       // this.securityAnswer = securityAnswer;
     }
 
-
     // constructor without id
-    public User(String username, String password, String email, boolean verified, Set<Role> roles/*,  String securityAnswer*/) {
+    public User(String username, String password, String email, boolean verified, String securityAnswer,  Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.verified = verified;
+        this.securityAnswer = securityAnswer;
         this.roles = roles;
-      //  this.securityAnswer = securityAnswer;
     }
 
 
@@ -120,6 +118,13 @@ public class User {
         this.roles = roles;
     }
 
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
 
     // add a role
     public void addRole(Role role){
@@ -133,12 +138,4 @@ public class User {
         role.getUsers().remove(this);
     }
 
-
-    /*public String getSecurityAnswer() {
-        return securityAnswer;
-    }
-
-    public void setSecurityAnswer(String securityAnswer) {
-        this.securityAnswer = securityAnswer;
-    }*/
 }
