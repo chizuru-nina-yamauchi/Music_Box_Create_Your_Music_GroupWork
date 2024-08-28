@@ -1,15 +1,23 @@
 package org.example.music_box_create_your_music_groupwork.service;
 
+import org.example.music_box_create_your_music_groupwork.model.Role;
 import org.example.music_box_create_your_music_groupwork.model.Subscription;
 import org.example.music_box_create_your_music_groupwork.model.User;
 import org.example.music_box_create_your_music_groupwork.repository.RoleRepository;
 import org.example.music_box_create_your_music_groupwork.repository.SubscriptionRepository;
 import org.example.music_box_create_your_music_groupwork.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service class for managing users and their subscriptions.
@@ -17,35 +25,27 @@ import java.util.Optional;
  * as well as creating subscriptions for users.
  */
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
-    /**
-     * Repository for managing User entities.
-     */
     private final UserRepository userRepository;
-
-    /**
-     * Repository for managing Role entities.
-     */
     private final RoleRepository roleRepository;
-
-    /**
-     * Repository for managing Subscription entities.
-     */
     private final SubscriptionRepository subscriptionRepository;
 
-    /**
-     * Constructs a new UserService with the specified repositories.
-     *
-     * @param userRepository the UserRepository to use for user-related operations
-     * @param roleRepository the RoleRepository to use for role-related operations
-     * @param subscriptionRepository the SubscriptionRepository to use for subscription-related operations
-     */
     @Autowired
     public UserService(UserRepository userRepository, RoleRepository roleRepository, SubscriptionRepository subscriptionRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.subscriptionRepository = subscriptionRepository;
+    }
+
+    /**
+     * Finds a user by their username.
+     *
+     * @param username the username of the user to find
+     * @return the found user
+     */
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     /**
@@ -76,6 +76,21 @@ public class UserService {
     }
 
     /**
+     * Adds a role to a user.
+     *
+     * @param user the user to whom the role is to be added
+     * @param roleName the name of the role to add
+     */
+    public void addRoleToUser(User user, String roleName) {
+        Optional<Role> roleOptional = roleRepository.findByName(roleName);
+        if (roleOptional.isPresent()) {
+            Role role = roleOptional.get();
+            user.getRoles().add(role);
+            userRepository.save(user);  // Save the user with the updated roles
+        }
+    }
+
+    /**
      * Finds a user by their ID.
      *
      * @param id the ID of the user to find
@@ -102,5 +117,17 @@ public class UserService {
      */
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 }

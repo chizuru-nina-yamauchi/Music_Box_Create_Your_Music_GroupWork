@@ -52,4 +52,7 @@ public class SubscriptionService {
     public boolean isUserSubscriber(Long userId) {
         return !subscriptionRepository.findByUserId(userId).isEmpty();
     }
+
+    public void createSubscription(Subscription subscription) {
+    }
 }
