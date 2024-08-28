@@ -48,4 +48,22 @@ public class RoleService {
     }
 
     // Other role-related methods can be added here, such as updating or deleting a role
+    /**
+     * Updates the specified role.
+     *
+     * @param role the role to update
+     * @return the updated role
+     */
+    public Role updateRole(Role role) {
+        return roleRepository.save(role);
+    }
+    /**
+     * Deletes the role with the specified ID.
+     *
+     * @param id the ID of the role to delete
+     */
+    public void deleteRole(Long id) {
+        roleRepository.deleteById(id);
+    }
+
 }
