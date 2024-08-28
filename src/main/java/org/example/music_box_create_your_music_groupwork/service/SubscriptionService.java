@@ -26,6 +26,14 @@ public class SubscriptionService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Creates a new subscription for the specified user.
+     *
+     * @param userId the ID of the user
+     * @param startDate the start date of the subscription
+     * @param endDate the end date of the subscription
+     * @return the created subscription
+     */
     public Subscription createSubscription(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -38,10 +46,21 @@ public class SubscriptionService {
         return subscriptionRepository.save(subscription);
     }
 
+    /**
+     * Retrieves all subscriptions for a specified user.
+     *
+     * @param userId the ID of the user
+     * @return a list of subscriptions for the user
+     */
     public List<Subscription> getSubscriptionsByUserId(Long userId) {
         return subscriptionRepository.findByUserId(userId);
     }
 
+    /**
+     * Cancels a subscription by its ID.
+     *
+     * @param subscriptionId the ID of the subscription to cancel
+     */
     public void cancelSubscription(Long subscriptionId) {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new RuntimeException("Subscription not found"));
@@ -49,10 +68,14 @@ public class SubscriptionService {
         subscriptionRepository.delete(subscription);
     }
 
+    /**
+     * Checks if a user has any active subscriptions.
+     *
+     * @param userId the ID of the user
+     * @return true if the user has an active subscription, false otherwise
+     */
     public boolean isUserSubscriber(Long userId) {
-        return !subscriptionRepository.findByUserId(userId).isEmpty();
-    }
-
-    public void createSubscription(Subscription subscription) {
+        List<Subscription> subscriptions = subscriptionRepository.findByUserId(userId);
+        return subscriptions.stream().anyMatch(subscription -> subscription.getEndDate().isAfter(LocalDateTime.now()));
     }
 }
