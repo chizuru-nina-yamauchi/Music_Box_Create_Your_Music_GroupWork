@@ -1,6 +1,20 @@
 :root {
-    --cell-color: #ccc;
-    --cell-hover-color: #f0f0f0;
+    --cell-color: #d8c3a5; /* Light beige for cell borders */
+    --cell-hover-color: #e9dccd; /* Lighter beige for cell hover effect */
+    --background-color: #f5f5dc; /* Very light beige for background */
+    --text-color: #3e2723; /* Dark brown for text */
+    --button-bg-color: #d8c3a5; /* Light beige for buttons */
+    --button-text-color: #3e2723; /* Dark brown for button text */
+    --button-hover-bg-color: #e9dccd; /* Lighter beige for button hover */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+h1, h2 {
+    color: var(--text-color);
 }
 
 .cell {
@@ -9,8 +23,24 @@
     margin: 5px;
     padding: 20px;
     transition: background-color 0.3s ease;
+    background-color: var(--cell-color); /* Set initial cell background color */
+    color: var(--text-color); /* Set cell text color */
 }
 
 .cell:hover {
     background-color: var(--cell-hover-color);
+}
+
+.btn-primary, .btn-success, .btn-danger, .btn-secondary {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-danger:hover, .btn-secondary:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+.table {
+    color: var(--text-color);
 }
