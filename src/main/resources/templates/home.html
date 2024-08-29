@@ -212,6 +212,7 @@
     let recordedChunks = []; // Array to store the recorded audio chunks
     let recordedAudios = []; // Array to store the recorded audio URLs
     let recordedAudioUrl = null; // URL of the recorded audio
+    let currentAudio = null; // To store the currently playing audio
 
     // Function to start recording
     function startRecording(){
@@ -308,6 +309,16 @@
             row.appendChild(actionsCell);
             console.log('Play button added to the row');
 
+            // Add the stop button to the row
+            const stopButton = document.createElement('button');
+            stopButton.textContent = 'Stop';
+            stopButton.style.marginLeft = '10px';  // Add some space between the buttons
+            stopButton.addEventListener('click', function(){
+                stopRecordedAudio(index); // Stop specific recorded audio by index
+            });
+            actionsCell.appendChild(stopButton);
+            console.log('Stop button added to the row');
+
             // Add the row to the table body
             tableBody.appendChild(row);
             console.log('Row added to the table body');
@@ -317,12 +328,32 @@
     //Function to play the recorded audio
     function playRecordedAudio(index){
         console.log('playRecordedAudio called for index:', index);
+        if(currentAudio){
+            currentAudio.pause(); // Pause the currently playing audio
+            currentAudio.currentTime = 0; // Reset the audio to the beginning
+            currentAudio = null;
+            console.log('Stopping currently playing audio');
+        }
+
         if(recordedAudios[index]){
-            const audio = new Audio(recordedAudios[index]);  // Create a new Audio object with the recorded audio URL
-            audio.play(); // Play the audio
+            currentAudio = new Audio(recordedAudios[index]);  // Create a new Audio object with the recorded audio URL
+            currentAudio.play(); // Play the audio
             console.log('Playing recorded audio:', recordedAudios[index]);
         } else{
             console.log('No recorded audio found for index:', index);
+        }
+    }
+
+    // Function to stop the recorded audio
+    function stopRecordedAudio(){
+        console.log('stopRecordedAudio called');
+        if(currentAudio){
+            currentAudio.pause(); // Pause the audio
+            currentAudio.currentTime = 0; // Reset the audio to the beginning
+            currentAudio = null;
+            console.log('Audio stopped');
+        } else{
+            console.log('No audio is currently playing');
         }
     }
 
