@@ -155,6 +155,7 @@
         // Stop the currently playing sound of the same type, if any
         if (players[type]) {
             players[type].stop();
+            document.querySelector('.cell[data-type="${type}"].playing')?.classList.remove('playing');
         }
 
         // Load and play the new sound
@@ -162,6 +163,9 @@
         try {
             await players[type].load(audioFile);
             players[type].start();
+
+            // Add the blinking effect to the currently playing cell
+            element.classList.add('playing');
         } catch (error) {
             console.error('Error loading audio file:', error);
         }
@@ -181,6 +185,9 @@
         console.log('Selected chords sound:', chords);
         console.log('Selected melodies sound:', melodies);
 
+        // Clear previous blinking effects
+        document.querySelectorAll('.playing').forEach(cell => cell.classList.remove('playing'));
+
         // Load all audio files
         const loadPromises = [];
         if (drums) loadPromises.push(loadAndPlay(drums).then(player => players['drums'] = player));
@@ -196,6 +203,11 @@
             if(players[type]){
                 players[type].loop = true;
                 players[type].start();
+                // Find and add the blinking effect to the selected cell
+                const selectedCell = document.querySelector(`.cell[data-audio="${document.getElementById(`${type}-selection`).value}"]`);
+                if (selectedCell) {
+                    selectedCell.classList.add('playing');
+                }
             }
         }
     }
@@ -206,6 +218,9 @@
                 players[type].stop();
             }
         }
+
+        // Remove the blinking effect from all cells
+        document.querySelectorAll('.playing').forEach(cell => cell.classList.remove('playing'));
     }
 
     let mediaRecorder; // MediaRecorder object to record audio

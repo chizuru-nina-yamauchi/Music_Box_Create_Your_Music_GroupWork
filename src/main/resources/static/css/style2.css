@@ -52,3 +52,17 @@ h1, h2 {
 .table {
     color: var(--text-color);
 }
+
+/* Add a blinking animation for the playing cell */
+@keyframes blink {
+    0% { background-color: var(--cell-color); }
+    50% { background-color: var(--button-active-bg-color); }
+    100% { background-color: var(--cell-color); }
+}
+
+.playing {
+    animation: blink 1s infinite;
+}
+
+
+
