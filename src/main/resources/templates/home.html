@@ -145,6 +145,8 @@
 
     // Function to select sound
     async function selectSound(element, type) {
+        await resumeToneContext();
+
         const audioFile = element.getAttribute('data-audio');
         console.log('Selected sound:', audioFile);
         console.log('Sound type:', type);
@@ -167,6 +169,8 @@
 
     // Function to play all selected sounds
     async function playAll() {
+        await resumeToneContext();
+
         const drums = document.getElementById('drums-selection').value;
         const bass = document.getElementById('bass-selection').value;
         const chords = document.getElementById('chords-selection').value;
@@ -207,6 +211,7 @@
     let mediaRecorder; // MediaRecorder object to record audio
     let recordedChunks = []; // Array to store the recorded audio chunks
     let recordedAudios = []; // Array to store the recorded audio URLs
+    let recordedAudioUrl = null; // URL of the recorded audio
 
     // Function to start recording
     function startRecording(){
@@ -229,15 +234,18 @@
         // Create a new MediaRecorder to record the audio
         mediaRecorder = new MediaRecorder(dest.stream);
         mediaRecorder.ondataavailable = function(e) {
-            recordedChunks.push(e.data); // Store the recorded chunks
+            if(e.data.size > 0) {
+                recordedChunks.push(e.data); // Store the recorded chunks
+            }
         };
         mediaRecorder.start(); // Start recording
 
         console.log('Recording started');
+        console.log('MediaRecorder state:', mediaRecorder.state);
     }
 
     /*
-    * A Blob (Binary Large OBject) is an object in JavaScript that represents immutable raw data.
+    * A Blob (Binary Large Object) is an object in JavaScript that represents immutable raw data.
     * Blobs represent data that isn't necessarily in a JavaScript-native format.
     * They are used to store and work with data that isn't text, like audio, images, and other multimedia data types.
     * */
@@ -246,25 +254,28 @@
         console.log('stopRecording called');
         if(mediaRecorder && mediaRecorder.state == 'recording'){
             mediaRecorder.stop();
-            console.log('MediaRecorder stopped');
-            // Convert recorded chunks to a Blob
-            const recordedBlob = new Blob(recordedChunks, { 'type' : 'audio/ogg; codecs=opus' });
-            console.log('Recorded Blob created:', recordedBlob);
+            mediaRecorder.onstop = function() {
+                console.log('MediaRecorder stopped');
+                console.log('MediaRecorder state:', mediaRecorder.state);
+                // Convert recorded chunks to a Blob
+                const recordedBlob = new Blob(recordedChunks, {'type': 'audio/webm; codecs=opus'}); // changing th Blob type from 'audio/webm' to 'audio/webm; codecs=opus' since it is not supported in some browsers
+                console.log('Recorded Blob created:', recordedBlob);
 
-            // Create an audio URL from the Blob
-            const recordedAudioUrl = URL.createObjectURL(recordedBlob);
+                // Create an audio URL from the Blob
+                recordedAudioUrl = URL.createObjectURL(recordedBlob);
 
-            console.log('Recorded audio URL:', recordedAudioUrl);
+                console.log('Recorded audio URL:', recordedAudioUrl);
 
-            // Add the recorded audio to the array
-            recordedAudios.push(recordedAudioUrl);
-            console.log('Recorded audio added to the array:', recordedAudios);
+                // Add the recorded audio to the array
+                recordedAudios.push(recordedAudioUrl);
+                console.log('Recorded audio added to the array:', recordedAudios);
 
-            // update the table with the new recorded audio
-            updateRecordingsTable();
-            console.log('Table updated with the new recording');
+                // update the table with the new recorded audio
+                updateRecordingsTable();
+                console.log('Table updated with the new recording');
 
-            console.log('Recorded chunks:', recordedChunks);
+                console.log('Recorded chunks:', recordedChunks);
+            };
         }
     }
 
