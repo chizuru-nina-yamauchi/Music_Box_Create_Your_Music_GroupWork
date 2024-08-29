@@ -6,6 +6,7 @@
     --button-bg-color: #d8c3a5; /* Light beige for buttons */
     --button-text-color: #3e2723; /* Dark brown for button text */
     --button-hover-bg-color: #e9dccd; /* Lighter beige for button hover */
+    --button-active-bg-color: #f0e4d2; /* Lightest beige for button active state */
 }
 
 body {
@@ -31,16 +32,23 @@ h1, h2 {
     background-color: var(--cell-hover-color);
 }
 
+.cell:active, .cell:focus {
+    background-color: var(--button-active-bg-color); /* Change to a slightly different beige when clicked or focused */
+    outline: none; /* Remove the default focus outline */
+}
+
 .btn-primary, .btn-success, .btn-danger, .btn-secondary {
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
     border: none;
+    transition: background-color 0.3s ease;
 }
 
-.btn-primary:hover, .btn-success:hover, .btn-danger:hover, .btn-secondary:hover {
-    background-color: var(--button-hover-bg-color);
+.btn-primary:active, .btn-success:active, .btn-danger:active, .btn-secondary:active,
+.btn-primary:focus, .btn-success:focus, .btn-danger:focus, .btn-secondary:focus {
+    background-color: var(--button-active-bg-color); /* Change to a slightly different beige when clicked or focused */
+    outline: none; /* Remove the default focus outline */
 }
-
 .table {
     color: var(--text-color);
 }
