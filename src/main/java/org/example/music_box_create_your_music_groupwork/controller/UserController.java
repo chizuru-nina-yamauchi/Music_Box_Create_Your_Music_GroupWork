@@ -90,7 +90,9 @@ public class UserController {
   /*  @PostMapping("/forgotPassword")
     public String handleForgotPassword(){
         // logic
-        //send e mail
+        // check if e mail exists
+        // check if security answer is correct
+        //send email
         //userService.sendPasswordResetEmail(email) bsp
     }*/
 
