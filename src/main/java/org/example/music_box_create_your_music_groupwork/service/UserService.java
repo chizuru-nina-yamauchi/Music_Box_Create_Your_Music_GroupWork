@@ -79,6 +79,8 @@ public class UserService implements UserDetailsService {
     public boolean saveUser(User user){
         // encode the password of the user
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // encode the securityAnswer
+        user.setSecurityAnswer(passwordEncoder.encode(user.getSecurityAnswer()));
 
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepo.findRoleByName("ROLE_USER");
