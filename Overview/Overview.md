@@ -33,4 +33,10 @@
   - **Subscription Feature**:
     - Designed and implemented the `Subscription` entity and repository.
     - Created service methods for managing subscriptions.
+    
+  - **Chizuru**:
+    - **Music App Enhancements**:
+      - Improved the user interface of the music app.
+      - Added new sound effects and visual elements to enhance the user experience.
+      - Implemented a feature to save and load user-created music projects.
 
