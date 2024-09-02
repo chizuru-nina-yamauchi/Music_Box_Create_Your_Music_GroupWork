@@ -23,7 +23,7 @@
     </p>
     <!-- Paragraphs for the instructions -->
     <p class="text-center">
-        Each box below holds a unique musical piece. Simply click 'Start' to activate the sound, then choose your favorite elements by clicking on the boxes.
+        Each box below holds a unique musical piece for 4 seconds. Simply click 'Start' to activate the sound, then choose your favorite elements by clicking on the boxes.
     </p>
     <p class="text-center">
         Press 'Play All' to hear your creation come to life. Want to stop? Hit 'Stop All' anytime.
@@ -107,6 +107,8 @@
 
 <!-- Link to Tone.js library -->
 <script src="https://cdn.jsdelivr.net/npm/tone@15.0.4/build/Tone.js"></script>
+<!-- Include the 'wav-encoder' library for encoding audio data -->
+<script src="https://cdn.jsdelivr.net/npm/wav-encoder@1.5.0/dist/wav-encoder.min.js"></script>
 
 <script type="module">
     // Function to resume Tone context
@@ -313,8 +315,10 @@
             row.appendChild(nameCell);
             console.log('Recording name added to the row');
 
-            // Add the play button to the row
+            // Add the actions cell to the row
             const actionsCell = document.createElement('td');
+
+            // Add the play button to the row
             const playButton = document.createElement('button');
             playButton.textContent = 'Play';
             playButton.addEventListener('click', function(){
@@ -333,6 +337,21 @@
             });
             actionsCell.appendChild(stopButton);
             console.log('Stop button added to the row');
+
+            // Add the download button to the row
+            const downloadButton = document.createElement('button');
+            downloadButton.textContent = 'Download';
+            downloadButton.className = 'btn btn-secondary';
+            downloadButton.style.marginLeft = '10px';  // Add some space between the buttons
+            downloadButton.addEventListener('click', function(){
+                downloadAudioFile(index); // Trigger download of specific recorded audio by index
+            });
+            actionsCell.appendChild(downloadButton);
+            console.log('Download button added to the row');
+
+            // Add the actions cell to the row
+            row.appendChild(actionsCell);
+
 
             // Add the row to the table body
             tableBody.appendChild(row);
@@ -372,7 +391,61 @@
         }
     }
 
+    // Function to download the recorded audio file as WAV
+    async function downloadAudioFile(index) {
+        console.log('downloadAudioFile called for index:', index);
+        if (recordedAudios[index]) {
+            const audioUrl = recordedAudios[index];
+            const audioContext = new AudioContext();
+
+            try {
+                // Fetch the audio data as an array buffer
+                const response = await fetch(audioUrl);
+                const arrayBuffer = await response.arrayBuffer();
+
+                // Decode the audio data
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+                // Extract the audio samples
+                const numberOfChannels = audioBuffer.numberOfChannels;
+                const sampleRate = audioBuffer.sampleRate;
+                const samples = [];
+
+                for (let i = 0; i < numberOfChannels; i++) {
+                    samples.push(audioBuffer.getChannelData(i));
+                }
+
+                // Use wav-encoder library to encode the audio samples as a WAV file
+                const wavData = await WavEncoder.encode({
+                    sampleRate: sampleRate,
+                    channelData: samples
+                });
+
+                // Create a new Blob for the WAV file
+                const wavBlob = new Blob([wavData], {type: 'audio/wav'});
+
+                // Create a new link to download the WAV file
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(wavBlob);
+                link.download = `Recording_${index + 1}.wav`; // Corrected syntax
+                link.click();
+                console.log('Download link created and clicked for recording:', index);
+            } catch (error) {
+                console.error('Error downloading audio file:', error);
+            }
+        } else {
+            console.log('No recorded audio found for index:', index);
+        }
+    }
+
+
     window.onload = function() {
+
+        if (typeof WavEncoder !== 'undefined') {
+            console.log("WavEncoder is available.");
+        } else {
+            console.error("WavEncoder is not loaded. Check your CDN link.");
+        }
         // Attach event listeners
         document.querySelectorAll('.cell').forEach(cell => {
             cell.addEventListener('click', function () {
