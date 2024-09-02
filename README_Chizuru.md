@@ -1,6 +1,7 @@
 # MusicBox_Create_Your_Music
 
 Create the music web application like https://learningmusic.ableton.com/index.html with Spring Boot, Java, JavaScript, HTML, CSS, and Thymeleaf.
+This project is for all the users to feel music closer and enjoy creating the music with the default instrument sounds.
 
 ## Sound Design and Sound Production for the instrument sounds
 
@@ -71,12 +72,13 @@ If we add the 'premium-user' role in addition to the user role after they pay, t
 │   │   └── HomeService.java        # Service class for handling business logic
 │   └── MusicBoxCreateYourMusicGroupWorkApplication.java  # Main Spring Boot application class
 ├── src/main/resources/static/audio # Directory containing audio files for the instruments
+│   └── drums1.wav, drums2.wav .... # all the audio files for the instruments
+├── src/main/resources/static/css   # Directory containing CSS files
+│   └── style2.css                  # CSS file for styling the home.html template
 ├── src/main/resources/templates
 │   └── home.html                   # Thymeleaf template for the home page and main function for music and sound with Tone.js
 ├── src/main/resources
 │   └── application.properties      # Later it will be needed for Spotify API if it is implemented
-├── src/main/resources/static/css   # Directory containing CSS files
-├── src/main/resources/static/js    # Directory containing JavaScript files
 ├── pom.xml                         # Maven configuration file
 └── README.md                       # Project documentation (this file)
 
@@ -110,6 +112,18 @@ The Tone.js (from JavaScript library) is used in this file to handle audio playb
 
 - `playAll()`: This function plays all selected sounds together. It retrieves the selected sounds for each instrument type from hidden input fields and plays them using the `loadAndPlay` function.
 
+- `startRecording()`: This function starts recording the music
+
+- `stopRecording()`: This function stops recording the music
+
+- `updateRecordingsTable()`: This function creates a table with the recorded music and buttons to play, stop, and download the music
+
+- `playRecordedAudio()`: This function plays the recorded music
+
+- `stopRecordedAudio()`: This function stops the recorded music
+
+- `downloadAudioFile()`: This function downloads the recorded music as a .webm file
+
 - Event listeners: Event listeners are attached to each instrument button to call `selectSound` when clicked, to the 'Start' button to call `resumeToneContext`, and to the 'Play All' button to call `playAll`.
 
 In summary, Tone.js is used in `home.html` to manage the audio context, load and play audio files, and handle user interactions related to playing sounds.
@@ -120,16 +134,22 @@ In summary, Tone.js is used in `home.html` to manage the audio context, load and
 Once the application is running:
 
 1. Open a web browser and go to http://localhost:8080/home.
-2. Choose the instrument sounds you want to play by clicking on the buttons for Drums, Bass, Chords, and Melodies.
-3. Click "Play All" to play the selected sounds together.
-4. Use the "Start" button to initialize the audio context if needed
+2. Use the "Start" button to initialize the audio context if needed
+3. Choose the instrument sounds you want to play by clicking on the buttons for Drums, Bass, Chords, and Melodies.
+4. Click "Play All" to play the selected sounds together.
+5. Click "Start Recording" to record the music
+6. Click "Stop Recording" to stop the recording
+7. Click 'Play' in the table to play the recorded music
+8. Click 'Stop' in the table to stop the recorded music
+9. Click 'Download' in the table to download the recorded music
+
 
 ## The function can be improved for music application: 
-1. Looping
+1. Looping(Done)
 2. Volume
 3. Timing and synchronizing
-4. Recording
-5. Download the music
+4. Recording(Done)
+5. Download the music(Done)
 6. Jump to user's spotify libraries with Spotify API for the music reference 
 etc
 

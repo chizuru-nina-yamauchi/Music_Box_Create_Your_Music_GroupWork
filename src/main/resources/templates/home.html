@@ -33,7 +33,7 @@
     </p>
     <!-- Row for the instrument sections -->
     <div class="row mt-5">
-        <!-- Drums Section -->
+        <!-- Column for each instrument type -->
         <div class="col">
             <!-- Title for the instrument type -->
             <h2 class="text-center">Drums</h2>
@@ -45,14 +45,7 @@
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
             </div>
-            <!-- Volume Control for Drums -->
-            <div class="form-group text-center mt-3">
-                <label for="drums-volume">Drums Volume</label>
-                <input type="range" class="form-range" id="drums-volume" min="0" max="1" step="0.01" value="1">
-            </div>
         </div>
-
-        <!-- Bass Section -->
         <div class="col">
             <h2 class="text-center">Bass</h2>
             <div class="row">
@@ -60,14 +53,7 @@
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
             </div>
-            <!-- Volume Control for Bass -->
-            <div class="form-group text-center mt-3">
-                <label for="bass-volume">Bass Volume</label>
-                <input type="range" class="form-range" id="bass-volume" min="0" max="1" step="0.01" value="1">
-            </div>
         </div>
-
-        <!-- Chords Section -->
         <div class="col">
             <h2 class="text-center">Chords</h2>
             <div class="row">
@@ -75,25 +61,13 @@
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
             </div>
-            <!-- Volume Control for Chords -->
-            <div class="form-group text-center mt-3">
-                <label for="chords-volume">Chords Volume</label>
-                <input type="range" class="form-range" id="chords-volume" min="0" max="1" step="0.01" value="1">
-            </div>
         </div>
-
-        <!-- Melodies Section -->
         <div class="col">
             <h2 class="text-center">Melodies</h2>
             <div class="row">
                 <div class="cell col-12 text-center" th:each="melodyEntry : ${melodies}" th:data-audio="@{${melodyEntry.value.audioFile}}" th:data-type="melodies" onclick="resumeToneContext(); selectSound(this, 'melodies')">
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
-            </div>
-            <!-- Volume Control for Melodies -->
-            <div class="form-group text-center mt-3">
-                <label for="melodies-volume">Melodies Volume</label>
-                <input type="range" class="form-range" id="melodies-volume" min="0" max="1" step="0.01" value="1">
             </div>
         </div>
     </div>
@@ -124,8 +98,8 @@
         </tr>
         </thead>
         <tbody>
-         <!-- Row for each recorded audio(Placeholder -->
-         <!-- JavaScript code will dynamically create and insert new rows to this table body as the new recordings are made -->
+        <!-- Row for each recorded audio(Placeholder -->
+        <!-- JavaScript code will dynamically create and insert new rows to this table body as the new recordings are made -->
         </tbody>
     </table>
 
@@ -151,43 +125,15 @@
 
     }
 
-    let volumeNodes = {
-        drums: new Tone.Volume(0).toDestination(),
-        bass: new Tone.Volume(0).toDestination(),
-        chords: new Tone.Volume(0).toDestination(),
-        melodies: new Tone.Volume(0).toDestination()
-    };
-
     // Function to load and play audio using Tone.js
-    async function loadAndPlay(audioFile, type) {
-        const player = new Tone.Player().connect(volumeNodes[type]);
+    async function loadAndPlay(audioFile) {
+        const player = new Tone.Player().toDestination();
         try {
             await player.load(audioFile); // Use the load function to load the audio file
         } catch (error) {
             console.error('Error loading audio file:', error);
         }
         return player;
-    }
-
-    // Function to adjust volume
-    function adjustVolume(type, volume) {
-        volumeNodes[type].volume.value = volume;
-    }
-
-    // Function to initialize volume sliders
-    function initializeVolumeSliders() {
-        document.getElementById('drums-volume').addEventListener('input', function() {
-            adjustVolume('drums', parseFloat(this.value));
-        });
-        document.getElementById('bass-volume').addEventListener('input', function() {
-            adjustVolume('bass', parseFloat(this.value));
-        });
-        document.getElementById('chords-volume').addEventListener('input', function() {
-            adjustVolume('chords', parseFloat(this.value));
-        });
-        document.getElementById('melodies-volume').addEventListener('input', function() {
-            adjustVolume('melodies', parseFloat(this.value));
-        });
     }
 
     let players = {
@@ -488,8 +434,6 @@
             resumeToneContext();
             playRecordedAudio(recordedAudios.length - 1); // Play the last recorded audio
         });
-
-        initializeVolumeSliders();
     }
 
 </script>
