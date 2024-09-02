@@ -107,8 +107,6 @@
 
 <!-- Link to Tone.js library -->
 <script src="https://cdn.jsdelivr.net/npm/tone@15.0.4/build/Tone.js"></script>
-<!-- Include the 'wav-encoder' library for encoding audio data -->
-<script src="https://cdn.jsdelivr.net/npm/wav-encoder@1.5.0/dist/wav-encoder.min.js"></script>
 
 <script type="module">
     // Function to resume Tone context
@@ -391,48 +389,15 @@
         }
     }
 
-    // Function to download the recorded audio file as WAV
-    async function downloadAudioFile(index) {
+    // Function to download the recorded audio file as webm
+    function downloadAudioFile(index) {
         console.log('downloadAudioFile called for index:', index);
         if (recordedAudios[index]) {
-            const audioUrl = recordedAudios[index];
-            const audioContext = new AudioContext();
-
-            try {
-                // Fetch the audio data as an array buffer
-                const response = await fetch(audioUrl);
-                const arrayBuffer = await response.arrayBuffer();
-
-                // Decode the audio data
-                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-                // Extract the audio samples
-                const numberOfChannels = audioBuffer.numberOfChannels;
-                const sampleRate = audioBuffer.sampleRate;
-                const samples = [];
-
-                for (let i = 0; i < numberOfChannels; i++) {
-                    samples.push(audioBuffer.getChannelData(i));
-                }
-
-                // Use wav-encoder library to encode the audio samples as a WAV file
-                const wavData = await WavEncoder.encode({
-                    sampleRate: sampleRate,
-                    channelData: samples
-                });
-
-                // Create a new Blob for the WAV file
-                const wavBlob = new Blob([wavData], {type: 'audio/wav'});
-
-                // Create a new link to download the WAV file
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(wavBlob);
-                link.download = `Recording_${index + 1}.wav`; // Corrected syntax
-                link.click();
-                console.log('Download link created and clicked for recording:', index);
-            } catch (error) {
-                console.error('Error downloading audio file:', error);
-            }
+            const link = document.createElement('a');
+            link.href = recordedAudios[index];
+            link.download = `Recording_${index + 1}.webm`;
+            link.click();
+            console.log('Downloading recorded audio:', recordedAudios[index]);
         } else {
             console.log('No recorded audio found for index:', index);
         }
@@ -440,12 +405,6 @@
 
 
     window.onload = function() {
-
-        if (typeof WavEncoder !== 'undefined') {
-            console.log("WavEncoder is available.");
-        } else {
-            console.error("WavEncoder is not loaded. Check your CDN link.");
-        }
         // Attach event listeners
         document.querySelectorAll('.cell').forEach(cell => {
             cell.addEventListener('click', function () {
