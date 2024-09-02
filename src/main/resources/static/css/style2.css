@@ -1,0 +1,68 @@
+:root {
+    --cell-color: #d8c3a5; /* Light beige for cell borders */
+    --cell-hover-color: #e9dccd; /* Lighter beige for cell hover effect */
+    --background-color: #f5f5dc; /* Very light beige for background */
+    --text-color: #3e2723; /* Dark brown for text */
+    --button-bg-color: #d8c3a5; /* Light beige for buttons */
+    --button-text-color: #3e2723; /* Dark brown for button text */
+    --button-hover-bg-color: #e9dccd; /* Lighter beige for button hover */
+    --button-active-bg-color: #f0e4d2; /* Lightest beige for button active state */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+h1, h2 {
+    color: var(--text-color);
+}
+
+.cell {
+    border: 1px solid var(--cell-color);
+    cursor: pointer;
+    margin: 5px;
+    padding: 20px;
+    transition: background-color 0.3s ease;
+    background-color: var(--cell-color); /* Set initial cell background color */
+    color: var(--text-color); /* Set cell text color */
+}
+
+.cell:hover {
+    background-color: var(--cell-hover-color);
+}
+
+.cell:active, .cell:focus {
+    background-color: var(--button-active-bg-color); /* Change to a slightly different beige when clicked or focused */
+    outline: none; /* Remove the default focus outline */
+}
+
+.btn-primary, .btn-success, .btn-danger, .btn-secondary {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:active, .btn-success:active, .btn-danger:active, .btn-secondary:active,
+.btn-primary:focus, .btn-success:focus, .btn-danger:focus, .btn-secondary:focus {
+    background-color: var(--button-active-bg-color); /* Change to a slightly different beige when clicked or focused */
+    outline: none; /* Remove the default focus outline */
+}
+.table {
+    color: var(--text-color);
+}
+
+/* Add a blinking animation for the playing cell */
+@keyframes blink {
+    0% { background-color: var(--cell-color); }
+    50% { background-color: var(--button-active-bg-color); }
+    100% { background-color: var(--cell-color); }
+}
+
+.playing {
+    animation: blink 1s infinite;
+}
+
+
+

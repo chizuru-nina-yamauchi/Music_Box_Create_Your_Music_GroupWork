@@ -77,7 +77,6 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!-- security -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
