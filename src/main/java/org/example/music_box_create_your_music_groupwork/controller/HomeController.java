@@ -29,7 +29,7 @@ public class HomeController {
      * @param model The Model object to add attributes to for rendering in the view.
      * @return The name of the view to render.
      */
-    @GetMapping("/home")
+    @GetMapping("/")
     public String home(Model model) {
         // Create maps of instruments
         Map<String, Instrument> drums = homeService.createInstrumentMap("Drums", 4);

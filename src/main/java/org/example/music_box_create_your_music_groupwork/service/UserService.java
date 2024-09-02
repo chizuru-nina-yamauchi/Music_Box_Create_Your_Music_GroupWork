@@ -1,13 +1,16 @@
 package org.example.music_box_create_your_music_groupwork.service;
 
 import jakarta.transaction.Transactional;
+import org.example.music_box_create_your_music_groupwork.model.PasswordResetToken;
 import org.example.music_box_create_your_music_groupwork.model.Role;
 import org.example.music_box_create_your_music_groupwork.model.User;
 import org.example.music_box_create_your_music_groupwork.model.VerificationToken;
+import org.example.music_box_create_your_music_groupwork.repository.PasswordResetTokenRepo;
 import org.example.music_box_create_your_music_groupwork.repository.RoleRepo;
 import org.example.music_box_create_your_music_groupwork.repository.UserRepo;
 import org.example.music_box_create_your_music_groupwork.repository.VerificationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -42,6 +45,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private PasswordResetTokenRepo passwordResetTokenRepo;
 
 
 
@@ -196,4 +202,51 @@ public class UserService implements UserDetailsService {
 
 
 
+    // send a reset password email
+    public String sendEmail(User user) throws MailException{
+
+
+        String resetlink = generateResetToken(user);
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom("springfull.coding.test@gmail.com");
+        msg.setTo(user.getEmail());
+
+        msg.setSubject("Password Reset Link");
+        msg.setText("Hello " + user.getUsername() + "\n\n" + "Please click on this link to reset your Password : " + resetlink + "\n\n");
+
+        try {
+            mailSender.send(msg);
+        }catch (Exception e){
+            System.out.println("Failed to send E-Mail." + e.getMessage());
+            return "error";
+        }
+
+        return "success";
+    }
+
+
+    // create reset token
+    private String generateResetToken(User user) {
+        UUID uuid = UUID.randomUUID();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime expiryDateTime = currentDateTime.plusMinutes(30);
+
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setUser(user);
+        resetToken.setToken(uuid.toString());
+        resetToken.setExpiryDateTime(expiryDateTime);
+        PasswordResetToken token = passwordResetTokenRepo.save(resetToken);
+        if (token != null){
+            String endpointUrl = "http://localhost:7070/resetPassword";
+            return endpointUrl + "/" + resetToken.getToken();
+        }
+        return "";
+    }
+
+    // check if the reset token has expired
+    public boolean hasExpired(LocalDateTime expiryDateTime) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        return expiryDateTime.isAfter(currentDateTime);
+    }
 }
