@@ -40,7 +40,7 @@
             <!-- Row for the instrument buttons -->
             <div class="row">
                 <!-- Cell for each instrument button, with Thymeleaf each loop to generate buttons for each instrument -->
-                <div class="cell col-12 text-center" th:each="drumEntry : ${drums}" th:data-audio="@{${drumEntry.value.audioFile}}" th:data-type="drums" onclick="resumeToneContext(); selectSound(this, 'drums')">
+                <div class="cell col-12 text-center" th:each="drumEntry : ${drums}" th:data-audio="${drumEntry.value.audioFile}" th:data-type="drums" onclick="resumeToneContext(); selectSound(this, 'drums')">
                     <!-- Button to play the instrument sound -->
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
@@ -49,7 +49,7 @@
         <div class="col">
             <h2 class="text-center">Bass</h2>
             <div class="row">
-                <div class="cell col-12 text-center" th:each="bassEntry : ${bass}" th:data-audio="@{${bassEntry.value.audioFile}}" th:data-type="bass" onclick="resumeToneContext(); selectSound(this, 'bass')">
+                <div class="cell col-12 text-center" th:each="bassEntry : ${bass}" th:data-audio="${bassEntry.value.audioFile}" th:data-type="bass" onclick="resumeToneContext(); selectSound(this, 'bass')">
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
             </div>
@@ -57,7 +57,7 @@
         <div class="col">
             <h2 class="text-center">Chords</h2>
             <div class="row">
-                <div class="cell col-12 text-center" th:each="chordEntry : ${chords}" th:data-audio="@{${chordEntry.value.audioFile}}" th:data-type="chords" onclick="resumeToneContext(); selectSound(this, 'chords')">
+                <div class="cell col-12 text-center" th:each="chordEntry : ${chords}" th:data-audio="${chordEntry.value.audioFile}" th:data-type="chords" onclick="resumeToneContext(); selectSound(this, 'chords')">
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
             </div>
@@ -65,7 +65,7 @@
         <div class="col">
             <h2 class="text-center">Melodies</h2>
             <div class="row">
-                <div class="cell col-12 text-center" th:each="melodyEntry : ${melodies}" th:data-audio="@{${melodyEntry.value.audioFile}}" th:data-type="melodies" onclick="resumeToneContext(); selectSound(this, 'melodies')">
+                <div class="cell col-12 text-center" th:each="melodyEntry : ${melodies}" th:data-audio="${melodyEntry.value.audioFile}" th:data-type="melodies" onclick="resumeToneContext(); selectSound(this, 'melodies')">
                     <button class="btn btn-primary"><i class="fas fa-play"></i></button>
                 </div>
             </div>
