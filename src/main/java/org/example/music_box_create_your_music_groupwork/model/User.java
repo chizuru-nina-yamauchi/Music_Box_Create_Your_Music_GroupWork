@@ -9,6 +9,7 @@ import java.util.Set;
  * This class is mapped to a database table using JPA annotations.
  */
 @Entity
+@Table(name = "\"user\"")
 public class User {
 
     @Id
