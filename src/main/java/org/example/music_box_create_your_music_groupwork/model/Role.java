@@ -1,81 +1,76 @@
 package org.example.music_box_create_your_music_groupwork.model;
 
+
 import jakarta.persistence.*;
 
-/**
- * Entity class representing a Role in the system.
- * This class is mapped to a database table using JPA annotations.
- */
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
+@Table(name = "roles")
 public class Role {
 
-    /**
-     * The unique identifier for the role.
-     * This value is generated automatically.
-     */
+    // attributes
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    /**
-     * The name of the role.
-     * This value must be unique and cannot be null.
-     */
     @Column(nullable = false, unique = true)
     private String name;
 
-    // Constructors
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
 
-    /**
-     * Default constructor for the Role class.
-     */
-    public Role() {
+
+
+    // empty constructor
+    public Role(){
     }
 
-    /**
-     * Constructor for the Role class.
-     *
-     * @param name the name of the role
-     */
-    public Role(String name) {
-        this.name = name;
+
+    // constructor with role name
+    public Role(String role) {
+        this.name = role;
     }
 
-    // Getters and Setters
 
-    /**
-     * Gets the ID of the role.
-     *
-     * @return the ID of the role
-     */
+
+    // getter and setter
     public Long getId() {
         return id;
     }
 
-    /**
-     * Sets the ID of the role.
-     *
-     * @param id the new ID of the role
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * Gets the name of the role.
-     *
-     * @return the name of the role
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the name of the role.
-     *
-     * @param name the new name of the role
-     */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String role) {
+        this.name = role;
     }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+
+    // add a user
+    public void addUser(User user){
+        this.users.add(user);
+        user.getRoles().add(this);
+    }
+
+    // remove a user
+    public void removeUser(User user){
+        this.users.remove(user);
+        user.getRoles().remove(this);
+    }
+
 }

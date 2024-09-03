@@ -11,23 +11,29 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-/**
- * HomeService class provides services related to the home page of the application.
- */
+
 @Service
 public class HomeService {
 
+    /**
+     * Logger for this class.
+     */
     private static final Logger logger = Logger.getLogger(HomeService.class.getName());
 
+    /**
+     * ResourceLoader to load resources.
+     */
     @Autowired
     private ResourceLoader resourceLoader;
 
     /**
-     * Creates a map of instruments with specified name prefix and count.
+
+     * Creates a map of instruments.
      *
-     * @param namePrefix the prefix for the instrument names
-     * @param count the number of instruments to create
-     * @return a map of instrument names to Instrument objects
+     * @param namePrefix The prefix for the name of the instruments.
+     * @param count The number of instruments to create.
+     * @return A map of instruments where the key is the name of the instrument and the value is the Instrument object.
+
      */
     public Map<String, Instrument> createInstrumentMap(String namePrefix, int count) {
         Map<String, Instrument> instruments = new LinkedHashMap<>();

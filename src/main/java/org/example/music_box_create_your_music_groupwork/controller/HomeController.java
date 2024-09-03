@@ -9,21 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Map;
 
-/**
- * HomeController class handles HTTP requests for the home page.
- */
+
 @Controller
 public class HomeController {
 
+
+    /**
+     * HomeService to handle business logic related to Home.
+     */
     @Autowired
     private HomeService homeService;
 
-    /**
-     * Handles GET requests to the /home endpoint.
-     *
-     * @param model the Model object to add attributes to
-     * @return the name of the view to be rendered
-     */
+
     @GetMapping("/home")
     public String home(Model model) {
         // Create maps of instruments

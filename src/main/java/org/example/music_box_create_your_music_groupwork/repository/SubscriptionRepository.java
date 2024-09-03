@@ -7,17 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-/**
- * Repository interface for managing Subscription entities.
- * Extends JpaRepository to provide CRUD operations and additional query methods.
- */
+
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 
-    /**
-     * Finds a list of Subscriptions by the user ID.
-     *
-     * @param userId the ID of the user whose subscriptions are to be found
-     * @return a list of Subscriptions associated with the given user ID
-     */
-    List<Subscription> findByUserId(Long userId);
+
+    List<Subscription> findByUserId(Long userId); // find all subscriptions by user id
 }

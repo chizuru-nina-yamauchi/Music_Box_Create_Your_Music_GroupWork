@@ -1,19 +1,17 @@
 package org.example.music_box_create_your_music_groupwork.model;
 
 import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Entity class representing a User in the system.
- * This class is mapped to a database table using JPA annotations.
- */
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "users")
 public class User {
 
+    // attributes
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -26,25 +24,45 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String status;
+    private boolean verified = false;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Subscription> subscriptions = new HashSet<>();
+    // security answer
+    @Column(nullable = false)
+    private String securityAnswer;
 
-    /**
-     * The roles associated with the user.
-     * This is a many-to-many relationship because a user can have multiple roles, and a role can belong to multiple users.
-     */
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    // Getters and Setters
+    // empty constructor
+    public User(){
+    }
 
+    // constructor
+    public User(Long id, String username, String password, String email, boolean verified, String securityAnswer, Set<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.verified = verified;
+        this.securityAnswer = securityAnswer;
+        this.roles = roles;
+    }
+
+    // constructor without id
+    public User(String username, String password, String email, boolean verified, String securityAnswer,  Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.verified = verified;
+        this.securityAnswer = securityAnswer;
+        this.roles = roles;
+    }
+
+    // getter and setter
     public Long getId() {
         return id;
     }
@@ -77,20 +95,12 @@ public class User {
         this.email = email;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean isVerified() {
+        return verified;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Set<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public void setSubscriptions(Set<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public Set<Role> getRoles() {
@@ -99,5 +109,25 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
+
+    // add a role
+    public void addRole(Role role){
+        this.roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    // remove a role
+    public void removeRole(Role role){
+        this.roles.remove(role);
+        role.getUsers().remove(this);
     }
 }

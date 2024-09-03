@@ -4,17 +4,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 /**
- * WebConfig class configures the web application context.
- * It implements the WebMvcConfigurer interface to customize the default Spring MVC configuration.
+ * Configuration class for web-related settings.
+ * Implements WebMvcConfigurer for custom configuration.
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+
     /**
-     * Configures the resource handlers for serving static resources.
+     * Adds resource handlers for serving static resources.
+     * Here, it's configured to serve audio files from the /static/audio/ directory.
      *
-     * @param registry the ResourceHandlerRegistry to add resource handlers to
+     * @param registry the ResourceHandlerRegistry to add the resource handler to.
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
