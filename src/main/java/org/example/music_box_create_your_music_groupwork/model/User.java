@@ -40,7 +40,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private PasswordResetToken passwordResetToken;
 
 

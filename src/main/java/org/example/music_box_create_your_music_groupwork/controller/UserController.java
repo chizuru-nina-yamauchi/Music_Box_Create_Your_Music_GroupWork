@@ -97,7 +97,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/resetPassword/{token]")
+    @GetMapping("/resetPassword/{token}")
     public String resetPasswordForm(String token, Model model){
         PasswordResetToken reset = passwordResetTokenRepo.findByToken(token);
 
