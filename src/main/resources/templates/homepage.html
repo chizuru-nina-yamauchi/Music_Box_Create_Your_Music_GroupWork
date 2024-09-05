@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
+  <meta charset="UTF-8">
+  <title>Home</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -17,6 +17,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
+        <!-- Subscription button added in navbar -->
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/subscriptions/create}">Subscribe</a> <!-- Added: Subscription button -->
+        </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/logout}">Logout</a>
         </li>
