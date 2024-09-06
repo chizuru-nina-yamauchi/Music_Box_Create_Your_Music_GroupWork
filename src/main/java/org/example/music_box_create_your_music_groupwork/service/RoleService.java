@@ -1,9 +1,11 @@
 package org.example.music_box_create_your_music_groupwork.service;
 
 import org.example.music_box_create_your_music_groupwork.model.Role;
-import org.example.music_box_create_your_music_groupwork.repository.RoleRepository;
+import org.example.music_box_create_your_music_groupwork.repository.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class for managing roles.
@@ -12,16 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoleService {
 
-    private final RoleRepository roleRepository;
+    private final RoleRepo roleRepo;
+    private static final Logger logger = LoggerFactory.getLogger(RoleService.class);
 
-    /**
-     * Constructs a RoleService with the specified RoleRepository.
-     *
-     * @param roleRepository the RoleRepository to be used by this service
-     */
     @Autowired
-    public RoleService(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleService(RoleRepo roleRepo) {
+        this.roleRepo = roleRepo;
     }
 
     /**
@@ -32,7 +30,9 @@ public class RoleService {
      */
     public Role createRole(String name) {
         Role role = new Role(name);
-        return roleRepository.save(role);
+        Role savedRole = roleRepo.save(role);
+        logger.info("Created new role with name: {}", name);
+        return savedRole;
     }
 
     /**
@@ -40,14 +40,16 @@ public class RoleService {
      *
      * @param name the name of the role to be found
      * @return the found Role
-     * @throws RuntimeException if no role is found with the specified name
+     * @throws IllegalArgumentException if no role is found with the specified name
      */
     public Role findByName(String name) {
-        return roleRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+        return roleRepo.findByName(name)
+                .orElseThrow(() -> {
+                    logger.error("Role not found with name: {}", name);
+                    return new IllegalArgumentException("Role not found with name: " + name);
+                });
     }
 
-    // Other role-related methods can be added here, such as updating or deleting a role
     /**
      * Updates the specified role.
      *
@@ -55,15 +57,18 @@ public class RoleService {
      * @return the updated role
      */
     public Role updateRole(Role role) {
-        return roleRepository.save(role);
+        Role updatedRole = roleRepo.save(role);
+        logger.info("Updated role with ID: {}", role.getId());
+        return updatedRole;
     }
+
     /**
      * Deletes the role with the specified ID.
      *
      * @param id the ID of the role to delete
      */
     public void deleteRole(Long id) {
-        roleRepository.deleteById(id);
+        roleRepo.deleteById(id);
+        logger.info("Deleted role with ID: {}", id);
     }
-
 }

@@ -113,7 +113,7 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    //Ioannis
+    // add role to user
     @Transactional
     public void addRoleToUser(User user, String roleName) {
         Role role = roleRepo.findRoleByName(roleName);

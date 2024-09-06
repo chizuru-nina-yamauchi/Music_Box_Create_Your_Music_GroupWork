@@ -8,14 +8,15 @@
 <div class="container">
     <h1>Subscription Management</h1>
 
-    <!-- Display message if available -->
+    <!-- Display success or error message -->
     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
     <!-- Subscription form -->
     <form action="/subscriptions/create" method="post">
         <div class="mb-3">
-            <label for="userId" class="form-label">User ID</label>
-            <input type="number" class="form-control" id="userId" name="userId" required>
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
         </div>
         <div class="mb-3">
             <label for="startDate" class="form-label">Start Date</label>
@@ -27,6 +28,8 @@
         </div>
         <button type="submit" class="btn btn-primary">Create Subscription</button>
     </form>
+
+    <!-- Button to return home -->
     <div class="mb-3">
         <a href="/" class="btn btn-secondary">Return Home</a>
     </div>
@@ -36,7 +39,7 @@
     <table class="table">
         <thead>
         <tr>
-            <th>ID</th>
+            <th>Email</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Action</th>
@@ -44,9 +47,12 @@
         </thead>
         <tbody>
         <tr th:each="subscription : ${subscriptions}">
-            <td th:text="${subscription.id}"></td>
+            <!-- Display user's email -->
+            <td th:text="${subscription.user.email}"></td>
+            <!-- Format dates -->
             <td th:text="${#dates.format(subscription.startDate, 'yyyy-MM-dd')}"></td>
             <td th:text="${#dates.format(subscription.endDate, 'yyyy-MM-dd')}"></td>
+            <!-- Cancel subscription button -->
             <td>
                 <a th:href="@{/subscriptions/cancel/{id}(id=${subscription.id})}" class="btn btn-danger">Cancel</a>
             </td>

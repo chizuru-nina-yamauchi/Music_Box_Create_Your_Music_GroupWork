@@ -3,31 +3,33 @@ package org.example.music_box_create_your_music_groupwork.service;
 import org.example.music_box_create_your_music_groupwork.model.Subscription;
 import org.example.music_box_create_your_music_groupwork.model.User;
 import org.example.music_box_create_your_music_groupwork.repository.SubscriptionRepository;
-import org.example.music_box_create_your_music_groupwork.repository.UserRepository;
+import org.example.music_box_create_your_music_groupwork.repository.UserRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Service
 public class SubscriptionService {
 
-    // dependencies
     private final SubscriptionRepository subscriptionRepository;
-    private final UserRepository userRepository;
+    private final UserRepo userRepo;
 
     @Autowired
-    public SubscriptionService(SubscriptionRepository subscriptionRepository, UserRepository userRepository) {
+    public SubscriptionService(SubscriptionRepository subscriptionRepository, UserRepo userRepo) {
         this.subscriptionRepository = subscriptionRepository;
-        this.userRepository = userRepository;
+        this.userRepo = userRepo;
     }
 
+    public Subscription createSubscription(String email, LocalDateTime startDate, LocalDateTime endDate) {
+        // Find the user by email
+        User user = userRepo.findByEmail(email);
 
-    public Subscription createSubscription(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (user == null) {
+            throw new RuntimeException("User not found with email: " + email);
+        }
 
         Subscription subscription = new Subscription();
         subscription.setUser(user);
@@ -37,11 +39,15 @@ public class SubscriptionService {
         return subscriptionRepository.save(subscription);
     }
 
+    public List<Subscription> getSubscriptionsByEmail(String email) {
+        User user = userRepo.findByEmail(email);
 
-    public List<Subscription> getSubscriptionsByUserId(Long userId) {
-        return subscriptionRepository.findByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found with email: " + email);
+        }
+
+        return subscriptionRepository.findByUserId(user.getId());
     }
-
 
     public void cancelSubscription(Long subscriptionId) {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
@@ -50,9 +56,14 @@ public class SubscriptionService {
         subscriptionRepository.delete(subscription);
     }
 
+    public boolean isUserSubscriber(String email) {
+        User user = userRepo.findByEmail(email);
 
-    public boolean isUserSubscriber(Long userId) {
-        List<Subscription> subscriptions = subscriptionRepository.findByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found with email: " + email);
+        }
+
+        List<Subscription> subscriptions = subscriptionRepository.findByUserId(user.getId());
         return subscriptions.stream().anyMatch(subscription -> subscription.getEndDate().isAfter(LocalDateTime.now()));
     }
 }

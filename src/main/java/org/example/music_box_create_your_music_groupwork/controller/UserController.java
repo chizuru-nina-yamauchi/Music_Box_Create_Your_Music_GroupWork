@@ -27,10 +27,9 @@ public class UserController {
     private SubscriptionService subscriptionService;
 
 
-
     // home page
     @GetMapping("/")
-    public String homepage(Principal principal){
+    public String homepage(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if (user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_SUBSCRIBER"))) {
             return "redirect:/subscriber-home";
@@ -41,22 +40,22 @@ public class UserController {
 
     // login
     @GetMapping("/login")
-    public String login(Model model){
-        model.addAttribute("errorMessage","Invalid Credentials");
+    public String login(Model model) {
+        model.addAttribute("errorMessage", "Invalid Credentials");
         return "login"; // returns to the login view
     }
 
 
     // logout
     @GetMapping("/logout")
-    public String logout(){
+    public String logout() {
         return "redirect:/login?logout"; // Redirect to login page
     }
 
 
     // signup form
     @GetMapping("/signup")
-    public String showSignupForm(Model model){
+    public String showSignupForm(Model model) {
         model.addAttribute("user", new User());
         return "signup";
     }
@@ -64,33 +63,31 @@ public class UserController {
 
     // signup
     @PostMapping("/signup")
-    public String signup(User user, Model model){
+    public String signup(User user, Model model) {
         boolean isUserSaved = userService.saveUser(user);
-        if (!isUserSaved){
+        if (!isUserSaved) {
             model.addAttribute("errorMessage", "Failed to send verification email. Please add a correct email.");
             return "redirect:/signup";
         }
-        model.addAttribute("message","A verification email has been send to " + user.getEmail());
+        model.addAttribute("message", "A verification email has been send to " + user.getEmail());
         return "verificationReq";
     }
 
 
     // verifying user
     @GetMapping("/verify")
-    public String verifyUser(@RequestParam("token") String token){
+    public String verifyUser(@RequestParam("token") String token) {
         boolean isVerified = userService.verifyUser(token);
-        if (isVerified){
+        if (isVerified) {
             return "redirect:/login?verified";
         }
         return "signup";
     }
 
 
-
-
     //forgot password
     @GetMapping("/forgotPassword")
-    public String forgotPasswordForm(){
+    public String forgotPasswordForm() {
         return "forgotPassword";
     }
 
@@ -105,32 +102,30 @@ public class UserController {
     }*/
 
 
-
-     //Ioannis
+    //Ioannis
     // subscriber form
-    @GetMapping("/subscribe")
-    public String showSubscriberForm(Model model) {
-        model.addAttribute("subscription", new Subscription());
-        return "subscriptionForm";  // This should map to your subscription form view
-    }
-
-    // assign Subscriber
     @PostMapping("/subscribe")
     public String processSubscription(@ModelAttribute Subscription subscription, Principal principal, Model model) {
-        User user = userService.findByUsername(principal.getName());
+        // Retrieve the user's email or username (depending on your logic)
+        User user = userService.findByUsername(principal.getName());  // Assuming principal holds the username
 
         if (user != null) {
+            // Add the subscriber role to the user
             userService.addRoleToUser(user, "ROLE_SUBSCRIBER");
 
+            // Set subscription details
             subscription.setUser(user);
             subscription.setStartDate(LocalDateTime.now());
             subscription.setEndDate(LocalDateTime.now().plusMonths(1));
-            subscriptionService.createSubscription(user.getId(), subscription.getStartDate(), subscription.getEndDate());
+
+            // Call the createSubscription method, passing the user's email.
+            subscriptionService.createSubscription(user.getEmail(), subscription.getStartDate(), subscription.getEndDate());
 
             model.addAttribute("message", "Subscription successful! You are now a premium user.");
             return "redirect:/subscriber-home";
         }
 
+        // If subscription fails
         model.addAttribute("errorMessage", "Subscription failed. Please try again.");
         return "subscriptionForm";
     }

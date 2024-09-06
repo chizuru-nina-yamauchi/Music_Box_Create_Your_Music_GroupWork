@@ -1,7 +1,9 @@
 package org.example.music_box_create_your_music_groupwork.controller;
 
 import org.example.music_box_create_your_music_groupwork.model.Subscription;
+import org.example.music_box_create_your_music_groupwork.model.User;
 import org.example.music_box_create_your_music_groupwork.service.SubscriptionService;
+import org.example.music_box_create_your_music_groupwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +17,12 @@ import java.util.List;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final UserService userService;
 
     @Autowired
-    public SubscriptionController(SubscriptionService subscriptionService) {
+    public SubscriptionController(SubscriptionService subscriptionService, UserService userService) {
         this.subscriptionService = subscriptionService;
+        this.userService = userService;
     }
 
     // Method to load the subscription form
@@ -28,23 +32,34 @@ public class SubscriptionController {
         return "subscription";  // Name of the Thymeleaf template
     }
 
-    // Method to handle form submission and create a subscription
+    // Method to handle form submission and create a subscription using email
     @PostMapping("/create")
     public String createSubscription(
-            @RequestParam Long userId,
+            @RequestParam String email,  // Accept email from the form
             @RequestParam LocalDateTime startDate,
             @RequestParam LocalDateTime endDate,
             Model model) {
-        Subscription subscription = subscriptionService.createSubscription(userId, startDate, endDate);
-        model.addAttribute("message", "Subscription created successfully!");
-        return "subscription";  // Return to the subscription page with a success message
+
+        // Create a subscription for the user using the email
+        try {
+            Subscription subscription = subscriptionService.createSubscription(email, startDate, endDate);
+            model.addAttribute("message", "Subscription created successfully for " + email + "!");
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+
+        return "subscription";  // Return to the subscription page with a success/error message
     }
 
-    // Method to display all subscriptions for a user
-    @GetMapping("/user/{userId}")
-    public String getSubscriptionsByUserId(@PathVariable Long userId, Model model) {
-        List<Subscription> subscriptions = subscriptionService.getSubscriptionsByUserId(userId);
-        model.addAttribute("subscriptions", subscriptions);  // Add subscriptions to the model
+    // Method to display all subscriptions for a user based on email
+    @GetMapping("/user/{email}")
+    public String getSubscriptionsByEmail(@PathVariable String email, Model model) {
+        try {
+            List<Subscription> subscriptions = subscriptionService.getSubscriptionsByEmail(email);
+            model.addAttribute("subscriptions", subscriptions);  // Add subscriptions to the model
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
         return "subscription";  // Return the Thymeleaf template to display subscriptions
     }
 
@@ -53,14 +68,18 @@ public class SubscriptionController {
     public String cancelSubscription(@PathVariable Long subscriptionId, Model model) {
         subscriptionService.cancelSubscription(subscriptionId);
         model.addAttribute("message", "Subscription canceled successfully!");
-        return "redirect:/subscriptions/user/{subscriptionId}";  // Redirect back to the subscription listing page
+        return "redirect:/subscriptions";  // Redirect back to the subscription listing page
     }
 
-    // Method to check if the user is a subscriber
-    @GetMapping("/user/{userId}/is-subscriber")
-    public String isUserSubscriber(@PathVariable Long userId, Model model) {
-        boolean isSubscriber = subscriptionService.isUserSubscriber(userId);
-        model.addAttribute("isSubscriber", isSubscriber);
+    // Method to check if the user is a subscriber by email
+    @GetMapping("/user/{email}/is-subscriber")
+    public String isUserSubscriber(@PathVariable String email, Model model) {
+        try {
+            boolean isSubscriber = subscriptionService.isUserSubscriber(email);
+            model.addAttribute("isSubscriber", isSubscriber);
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
         return "subscription";  // Return the subscription page to show the subscription status
     }
 }
