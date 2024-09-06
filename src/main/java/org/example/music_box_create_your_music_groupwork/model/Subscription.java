@@ -8,17 +8,17 @@ public class Subscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;  // Unique identifier for the subscription
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDateTime startDate;  // Start date of the subscription
 
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDateTime endDate;  // End date of the subscription
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;  // The user associated with the subscription
 
     // Getters and Setters
 
