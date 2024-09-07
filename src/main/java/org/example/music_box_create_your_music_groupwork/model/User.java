@@ -26,11 +26,9 @@ public class User {
     @Column(nullable = false)
     private boolean verified = false;
 
-
     // security answer
     @Column(nullable = false)
     private String securityAnswer;
-
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -39,12 +37,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-
-
     // empty constructor
     public User(){
     }
-
 
     // constructor
     public User(Long id, String username, String password, String email, boolean verified, String securityAnswer, Set<Role> roles) {
@@ -66,8 +61,6 @@ public class User {
         this.securityAnswer = securityAnswer;
         this.roles = roles;
     }
-
-
 
     // getter and setter
     public Long getId() {
@@ -98,8 +91,8 @@ public class User {
         return email;
     }
 
-    public void setEmail(String eMail) {
-        this.email = eMail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public boolean isVerified() {
@@ -137,5 +130,4 @@ public class User {
         this.roles.remove(role);
         role.getUsers().remove(this);
     }
-
 }

@@ -1,5 +1,6 @@
 package org.example.music_box_create_your_music_groupwork.service;
 
+
 import jakarta.transaction.Transactional;
 import org.example.music_box_create_your_music_groupwork.model.Role;
 import org.example.music_box_create_your_music_groupwork.model.User;
@@ -15,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -111,6 +113,18 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
+    // add role to user
+    @Transactional
+    public void addRoleToUser(User user, String roleName) {
+        Role role = roleRepo.findRoleByName(roleName);
+        if (role == null) {
+            role = new Role(roleName);
+            roleRepo.save(role);
+        }
+        user.addRole(role);
+        userRepo.save(user);
+    }
+
 
 
     // find user by username
@@ -197,3 +211,4 @@ public class UserService implements UserDetailsService {
 
 
 }
+
