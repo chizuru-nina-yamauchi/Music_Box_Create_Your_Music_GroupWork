@@ -9,5 +9,4 @@ public class MusicBoxCreateYourMusicGroupWorkApplication {
     public static void main(String[] args) {
         SpringApplication.run(MusicBoxCreateYourMusicGroupWorkApplication.class, args);
     }
-
 }

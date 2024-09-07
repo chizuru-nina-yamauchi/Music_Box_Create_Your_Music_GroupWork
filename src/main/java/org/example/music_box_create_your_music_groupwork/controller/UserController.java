@@ -8,10 +8,7 @@ import org.example.music_box_create_your_music_groupwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -54,10 +51,10 @@ public class UserController {
     public String signup(User user, Model model){
         boolean isUserSaved = userService.saveUser(user);
         if (!isUserSaved){
-            model.addAttribute("errorMessage", "Failed to send verification email. Please add a correct email.");
+            model.addAttribute("errorMessage", "Failed to sent verification email. Please add a correct email.");
             return "redirect:/signup";
         }
-        model.addAttribute("message","A verification email has been send to " + user.getEmail());
+        model.addAttribute("message","A verification email has been sent to " + user.getEmail());
         return "verificationReq";
     }
 
@@ -84,22 +81,25 @@ public class UserController {
 
 
     @PostMapping("/forgotPassword")
-        public String handleForgotPassword(@ModelAttribute User user){
+        public String handleForgotPassword(@ModelAttribute User user, Model model){
         String output = "";
-        User resetUser = userService.findByEmail(user.getEmail());
-        if (resetUser != null){
-            output = userService.sendEmail(resetUser);
+        User forgotUser = userService.findByEmail(user.getEmail());
+        if (forgotUser != null){
+            output = userService.sendEmail(forgotUser);
         }
         if (output.equals("success")){
-            return "redirect:/login?success";
+            model.addAttribute("success","An email to reset your Password has been sent to you " + user.getUsername());
+            return "resetPasswordReq";
         }
-        return "redirect:/login?error";
+        model.addAttribute("error","Failed to send a reset email. Please try again.");
+        return "resetPasswordReq";
     }
 
-
+    // reset the password
     @GetMapping("/resetPassword/{token}")
-    public String resetPasswordForm(String token, Model model){
+    public String resetPasswordForm(@PathVariable String token, Model model){
         PasswordResetToken reset = passwordResetTokenRepo.findByToken(token);
+
 
         if (reset != null && userService.hasExpired(reset.getExpiryDateTime())) {
             model.addAttribute("email", reset.getUser().getEmail());
@@ -107,4 +107,17 @@ public class UserController {
         }
         return "redirect:/forgotPassword?error";
     }
+
+
+    @PostMapping("/resetPassword")
+    public String resetPassword(@ModelAttribute User user, Model model){
+        User resetUser = userService.findByEmail(user.getEmail());
+        if (resetUser != null){
+            resetUser.setPassword(user.getPassword());
+            userService.saveUser(resetUser);
+        }
+        model.addAttribute("success", "Password has been reset successfully");
+        return "resetPasswordMsg";
+    }
+
 }
