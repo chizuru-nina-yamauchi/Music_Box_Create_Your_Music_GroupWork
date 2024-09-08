@@ -65,4 +65,11 @@ h1, h2 {
 }
 
 
+/*changes the color of a button when hovering over it*/
+
+.btn-primary:hover, .btn-success:hover, .btn-danger:hover, .btn-secondary:hover {
+    background-color: var(--button-hover-bg-color); /* Change to a lighter beige on hover */
+    color: var(--text-color); /* Ensure text color stays consistent */
+}
+
 
