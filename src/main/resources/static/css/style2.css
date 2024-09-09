@@ -73,3 +73,20 @@ h1, h2 {
 }
 
 
+/* Add styles for the btn-info class */
+.btn-info {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-info:active, .btn-info:focus {
+    background-color: var(--button-active-bg-color);
+    outline: none;
+}
+
+.btn-info:hover {
+    background-color: var(--button-hover-bg-color);
+    color: var(--text-color);
+}

@@ -15,6 +15,12 @@
 <body>
 <!-- Main container for the webpage -->
 <div class="container">
+    <!-- Logout button positioned in the top-right corner -->
+    <div class="d-flex justify-content-end mt-3">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-info logout-button">Logout</button>
+        </form>
+    </div>
     <!-- Title of the webpage -->
     <h1 class="text-center mt-5">Music Box</h1>
     <!-- Lead text for the webpage -->
