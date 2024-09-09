@@ -61,4 +61,13 @@ This service helps manage who gets assigned to which role (User, Admin, etc.) an
 - **Find a Role**: Helps us find an existing role by name (e.g., "Admin").
 - **Update a Role**: Allows us to update details about existing roles.
 - **Delete a Role**: Enables us to delete roles that are no longer needed.
+---
+### 6. Subscription HTML Template
+
+The user interface for managing subscriptions is created using an HTML file that allows users to:
+
+- Enter their email and subscription dates.
+- View their current subscriptions.
+- Cancel active subscriptions.
+---
 
