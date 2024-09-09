@@ -16,11 +16,17 @@
 <!-- Main container for the webpage -->
 <div class="container">
     <!-- Logout button positioned in the top-right corner -->
-    <div class="d-flex justify-content-end mt-3">
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-info logout-button">Logout</button>
-        </form>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-center" th:href="@{/logout}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <!-- Title of the webpage -->
     <h1 class="text-center mt-5">Music Box</h1>
     <!-- Lead text for the webpage -->

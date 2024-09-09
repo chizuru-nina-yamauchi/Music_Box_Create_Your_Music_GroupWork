@@ -72,21 +72,12 @@ h1, h2 {
     color: var(--text-color); /* Ensure text color stays consistent */
 }
 
-
-/* Add styles for the btn-info class */
-.btn-info {
-    background-color: var(--button-bg-color);
+/* nav-link */
+.nav-link {
     color: var(--button-text-color);
-    border: none;
-    transition: background-color 0.3s ease;
+    transition: color 0.3s ease;
 }
 
-.btn-info:active, .btn-info:focus {
-    background-color: var(--button-active-bg-color);
-    outline: none;
-}
-
-.btn-info:hover {
-    background-color: var(--button-hover-bg-color);
-    color: var(--text-color);
+.nav-link:hover {
+    color: var(--button-hover-bg-color);
 }
