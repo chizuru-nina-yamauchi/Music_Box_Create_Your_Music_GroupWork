@@ -72,4 +72,12 @@ h1, h2 {
     color: var(--text-color); /* Ensure text color stays consistent */
 }
 
+/* nav-link */
+.nav-link {
+    color: var(--button-text-color);
+    transition: color 0.3s ease;
+}
 
+.nav-link:hover {
+    color: var(--button-hover-bg-color);
+}
