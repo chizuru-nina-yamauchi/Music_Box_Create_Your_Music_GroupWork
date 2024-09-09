@@ -1,39 +1,64 @@
-# Project Overview: Music Box - Create Your Own Music
+## Subscription and User Roles Explained
 
-## Introduction
-**Music Box** is an interactive web application designed to make music creation accessible and enjoyable for everyone. Inspired by Ableton's Learning Music platform, Music Box allows users to explore music production in a fun and engaging way. The platform provides hands-on, interactive experiences that let users play with various musical elements such as drums, bass, chords, and melodies in real time.
+In our project, we handle how users can subscribe to our platform and how different user roles (like normal users and administrators) are managed. Below is an explanation of how these features work, presented in a simple way for everyone to understand.
 
-The core idea behind Music Box is to demystify the process of making music, allowing users to realize that creating and playing music is not as difficult as it might seem. Whether you are a beginner with no prior knowledge or someone with a bit more experience, Music Box offers a space to explore your musical creativity.
+---
 
-## What Music Box Offers
+### 1. Subscription Service
 
-### 1. Interactive Music Experience
-Music Box enables users to dive into music production through interactive modules that simplify the process of making music. Users can experiment with virtual instruments and audio samples in a way that feels more like play than formal learning, encouraging exploration and creativity.
+**What It Does**:  
+The subscription service manages all the actions related to users signing up for paid or free services. This part of the system ensures that users can subscribe, check their subscription status, and cancel if needed.
 
-### 2. Music Creation Tools
-Users have access to a variety of virtual instruments, including drums, bass, chords, and melodies, which they can combine and modify to create their own unique music. The real-time audio technology allows users to hear the effects of their choices instantly, making the experience both intuitive and rewarding.
+**Main Features**:
+- **Create a Subscription**: When a user signs up, the system creates a new subscription based on the dates they choose.
+- **View Subscriptions**: Users can see all their current and past subscriptions.
+- **Cancel a Subscription**: Users can cancel their active subscription if they no longer want it.
+- **Check if a User is Subscribed**: The system can check whether a user is currently a subscriber.
 
-### 3. Role-Based Access with Premium Features
-The platform offers different levels of access based on user roles:
-- **Normal Users**: Can explore basic music creation tools and enjoy the interactive experience.
-- **Premium Subscribers**: Unlock advanced features such as project exporting and real-time collaboration.
+---
 
-### 4. Focus on Play and Interaction
-Instead of a formal teaching platform, Music Box focuses on allowing users to play and interact with music. The experience is designed to be more about discovering and enjoying the process of making music rather than following structured lessons or tutorials.
+### 2. Subscription Data Storage
 
-## Key Objectives
-Music Box is built to achieve the following goals:
-- **Make Music Accessible**: Provide an engaging way for users to experience music creation, regardless of their prior knowledge or experience.
-- **Empower Creativity**: Offer a platform where users can freely experiment with different sounds and musical elements to create their own compositions.
-- **Encourage Exploration**: Focus on exploration and interaction with music, helping users feel confident and excited about making music.
+**What It Does**:  
+This part of the system is responsible for storing and retrieving information about user subscriptions in the database.
 
-## Target Audience
-Music Box is designed for a wide range of users:
-- **Beginners**: Who want to explore music creation without needing any prior knowledge.
-- **Music Enthusiasts**: Looking for a fun and accessible platform to experiment with sounds and compositions.
-- **Casual Users**: Who want to enjoy the process of making music in a playful and interactive environment.
+**Main Features**:
+- **Find Subscriptions by User**: The system can look up all the subscriptions connected to a specific user.
 
-## Conclusion
-**Music Box** is all about making music creation fun, interactive, and accessible. It offers an enjoyable platform for anyone interested in music, helping users not only play with music but also feel more connected to the art of making music. By allowing users to experiment with sounds and compositions in real time, Music Box turns the idea of music creation into a playful and immersive experience.
+---
 
-The platform is built with a focus on user enjoyment and aims to make the process of making music approachable for everyone, regardless of their background or skill level.
+### 3. Subscription Controller
+
+**What It Does**:  
+The controller acts as the "middleman" between the user and the subscription service. It handles requests like creating or canceling subscriptions and shows the user the right information.
+
+**Main Features**:
+- **Show Subscription Form**: Displays the form where users can sign up for a subscription.
+- **Create a Subscription**: After filling out the form, this feature processes the user’s subscription and saves it.
+- **View Subscriptions**: Displays all the subscriptions that a user has signed up for.
+- **Cancel Subscription**: Allows a user to cancel their active subscription.
+- **Check Subscription Status**: Lets users know if they are currently subscribed.
+
+---
+
+### 4. User Roles
+
+**What It Does**:  
+In our system, users can have different "roles," which decide what they can and cannot do on the platform. For example, regular users can access basic features, while administrators (admins) have more control and can manage other users.
+
+**Main Features**:
+- **Role Management**: Each role (like "User" or "Admin") can have multiple users assigned to it. We can add users to roles or remove them.
+
+---
+
+### 5. Role Management Service
+
+**What It Does**:  
+This service helps manage who gets assigned to which role (User, Admin, etc.) and allows us to add, update, or delete roles in the system.
+
+**Main Features**:
+- **Create a New Role**: Allows us to create new roles for the system.
+- **Find a Role**: Helps us find an existing role by name (e.g., "Admin").
+- **Update a Role**: Allows us to update details about existing roles.
+- **Delete a Role**: Enables us to delete roles that are no longer needed.
+
